@@ -1,10 +1,10 @@
 ALTER TABLE `event` ADD  `date_start` datetime  NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `label`,
 ADD `date_end` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `date_start`,
 ADD `is_daily_event_idfs`int(11) NOT NULL DEFAULT '0' AFTER `date_end`,
-ADD `excerpt`  VARCHAR (255) NOT NULL DEFAULT '' AFTER `is_daily_event`,
-ADD `description` text  TEXT NOT NULL DEFAULT '' AFTER `excerpt`,
+ADD `excerpt`  VARCHAR (255) NOT NULL DEFAULT '' AFTER `is_daily_event_idfs`,
+ADD `description` TEXT NOT NULL DEFAULT '' AFTER `excerpt`,
 ADD `root_event_idfs` int(11) NOT NULL DEFAULT 0 AFTER `description`,
 ADD `calendar_idfs` int(11)  NOT NULL DEFAULT '0' AFTER `root_event_idfs`,
-ADD `web_show` tinyint(1) NOT NULL DEFAULT 0 AFTER `calendar_idfs`,
-ADD `web_spotlight` tinyint(1) NOT NULL DEFAULT 0 AFTER `web_show`,
-ADD `event_confirm` tinyint(1) NOT NULL DEFAULT 0 AFTER `web_spotlight`;
+ADD `web_show_idfs` tinyint(1) NOT NULL DEFAULT 0 AFTER `calendar_idfs`,
+ADD `web_spotlight_idfs` tinyint(1) NOT NULL DEFAULT 0 AFTER `web_show_idfs`,
+ADD `event_confirm_idfs` tinyint(1) NOT NULL DEFAULT 0 AFTER `web_spotlight_idfs`;
