@@ -38,6 +38,20 @@ return [
                     ],
                 ],
             ],
+            'event-calendar' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route' => '/calendar[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\CalendarController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
             'event-setup' => [
                 'type'    => Segment::class,
                 'options' => [

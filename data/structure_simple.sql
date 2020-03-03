@@ -7,4 +7,19 @@ ADD `root_event_idfs` int(11) NOT NULL DEFAULT 0 AFTER `description`,
 ADD `calendar_idfs` int(11)  NOT NULL DEFAULT '0' AFTER `root_event_idfs`,
 ADD `web_show_idfs` tinyint(1) NOT NULL DEFAULT 0 AFTER `calendar_idfs`,
 ADD `web_spotlight_idfs` tinyint(1) NOT NULL DEFAULT 0 AFTER `web_show_idfs`,
-ADD `event_confirm_idfs` tinyint(1) NOT NULL DEFAULT 0 AFTER `web_spotlight_idfs`;
+ADD `event_confirm_idfs` tinyint(1) NOT NULL DEFAULT 0 AFTER `web_spotlight_idfs`,
+ADD `featured_image` VARCHAR (255) NOT NULL DEFAULT '' AFTER `label`;
+
+CREATE TABLE `event_calendar` (
+  `Calendar_ID` int(11) NOT NULL,
+  `label` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `color_background` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `color_text` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `event_calendar`
+    ADD PRIMARY KEY (`Calendar_ID`);
+
+ALTER TABLE `event_calendar`
+    MODIFY `Calendar_ID` int(11) NOT NULL AUTO_INCREMENT;

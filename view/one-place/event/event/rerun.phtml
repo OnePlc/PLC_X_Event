@@ -1,0 +1,58 @@
+<?php
+?>
+<div class="row">
+    <div class="col-md-8">
+        <h5><?=$this->translate('Manage Reruns')?></h5>
+    </div>
+</div>
+<ul class="list-group" id="plc-event-rerun-list">
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-md-5">
+                <b><?=$this->translate('Start')?></b>
+            </div>
+            <div class="col-md-5">
+                <b><?=$this->translate('End')?></b>
+            </div>
+            <div class="col-md-2">
+                &nbsp;
+            </div>
+        </div>
+    </li>
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-md-5">
+                213
+            </div>
+            <div class="col-md-5">
+                4234
+            </div>
+            <div class="col-md-2">
+                <a href="#" class="plc-event-edit-rerun-ajax"><i class="fas fa-edit" title="<?=$this->translate('Edit Rerun')?>"></i></a>
+                | <i class="fas fa-trash"  title="<?=$this->translate('Delete Rerun')?>"></i>
+            </div>
+        </div>
+    </li>
+</ul>
+<script>
+    $('.eventModalBackLnk').on('click',function() {
+        $.post('/event/modal/<?=$oEvent->getID()?>',{mode:'modal',goto:'general'},function(retModal) {
+            $('#exampleModalCenter').html(retModal);
+        });
+    });
+
+    $('.plc-event-add-rerun-ajax').on('click',function() {
+        $.post('/event/addrerun/<?=$oEvent->getID()?>',{},function(retListHTML) {
+            $('#plc-event-rerun-list').append(retListHTML);
+        });
+       return false;
+    });
+
+    $('.plc-event-edit-rerun-ajax').on('click',function () {
+        var myLI = $(this).parent('div').parent('div').parent('li');
+        // todo: dynamic id here
+        $.post('/event/editrerun/1',{},function(retListHTML) {
+            myLI.replaceWith(retListHTML);
+        });
+    });
+</script>

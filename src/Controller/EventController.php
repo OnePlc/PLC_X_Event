@@ -19,6 +19,7 @@ namespace OnePlace\Event\Controller;
 
 use Application\Controller\CoreEntityController;
 use Application\Model\CoreEntityModel;
+use OnePlace\Event\Model\CalendarTable;
 use OnePlace\Event\Model\Event;
 use OnePlace\Event\Model\EventTable;
 use Laminas\View\Model\ViewModel;
@@ -31,6 +32,8 @@ class EventController extends CoreEntityController {
      * @since 1.0.0
      */
     protected $oTableGateway;
+    protected $oCalendarTbl;
+
 
     /**
      * EventController constructor.
@@ -42,6 +45,10 @@ class EventController extends CoreEntityController {
     public function __construct(AdapterInterface $oDbAdapter,EventTable $oTableGateway,$oServiceManager) {
         $this->oTableGateway = $oTableGateway;
         $this->sSingleForm = 'event-single';
+        $this->oCalendarTbl = $oServiceManager->get(CalendarTable::class);
+
+        setlocale(LC_TIME, CoreEntityController::$oSession->oUser->lang);
+
         parent::__construct($oDbAdapter,$oTableGateway,$oServiceManager);
 
         if($oTableGateway) {
@@ -120,5 +127,61 @@ class EventController extends CoreEntityController {
          * event-view-before
          */
         return $this->generateViewView('event');
+    }
+
+    public function modalAction() {
+        $this->layout('layout/modal');
+
+        $iEventID = $this->params()->fromRoute('id', '0');
+        $oEvent = $this->oTableGateway->getSingle($iEventID);
+        $oCalendar = $this->oCalendarTbl->getSingle($oEvent->calendar_idfs);
+
+        $this->layout()->aModalButtons = [];
+        $this->layout()->oItem = $oEvent;
+
+        return new ViewModel([
+            'oEvent' => $oEvent,
+            'oCalendar' => $oCalendar,
+            'sFormName' => $this->sSingleForm,
+        ]);
+    }
+
+    public function rerunAction() {
+        $this->layout('layout/json');
+
+        $iEventID = $this->params()->fromRoute('id', '0');
+        $oEvent = $this->oTableGateway->getSingle($iEventID);
+        $oCalendar = $this->oCalendarTbl->getSingle($oEvent->calendar_idfs);
+
+        return new ViewModel([
+            'oEvent' => $oEvent,
+            'oCalendar' => $oCalendar,
+            'sFormName' => $this->sSingleForm,
+        ]);
+    }
+
+    public function addrerunAction() {
+        $this->layout('layout/json');
+
+        $iEventID = $this->params()->fromRoute('id', '0');
+        $oEvent = $this->oTableGateway->getSingle($iEventID);
+        $oCalendar = $this->oCalendarTbl->getSingle($oEvent->calendar_idfs);
+
+        return new ViewModel([
+            'oEvent' => $oEvent,
+            'oCalendar' => $oCalendar,
+            'sFormName' => $this->sSingleForm,
+        ]);
+    }
+
+    public function editrerunAction() {
+        $this->layout('layout/json');
+
+        $iEventID = $this->params()->fromRoute('id', '0');
+        //$oEvent = $this->oTableGateway->getSingle($iEventID);
+        //$oCalendar = $this->oCalendarTbl->getSingle($oEvent->calendar_idfs);
+
+        return new ViewModel([
+        ]);
     }
 }

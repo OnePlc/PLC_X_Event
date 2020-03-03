@@ -26,7 +26,13 @@ INSERT INTO `permission` (`permission_key`, `module`, `label`, `nav_label`, `nav
 ('list', 'OnePlace\\Event\\Controller\\ApiController', 'List', '', '', 1, 0),
 ('view', 'OnePlace\\Event\\Controller\\EventController', 'View', '', '', 0, 0),
 ('dump', 'OnePlace\\Event\\Controller\\ExportController', 'Excel Dump', '', '', 0, 0),
-('index', 'OnePlace\\Event\\Controller\\SearchController', 'Search', '', '', 0, 0);
+('index', 'OnePlace\\Event\\Controller\\SearchController', 'Search', '', '', 0, 0),
+('index', 'OnePlace\\Event\\Controller\\CalendarController', 'Calendar', '', '', 0, 0),
+('load', 'OnePlace\\Event\\Controller\\CalendarController', 'Load Calendar Data', '', '', 0, 0),
+('modal', 'OnePlace\\Event\\Controller\\EventController', 'View Modal', '', '', 0, 0),
+('rerun', 'OnePlace\\Event\\Controller\\EventController', 'Manage Reruns', '', '', 0, 0),
+('addrerun', 'OnePlace\\Event\\Controller\\EventController', 'Manage Reruns', '', '', 0, 0),
+('editrerun', 'OnePlace\\Event\\Controller\\EventController', 'Manage Reruns', '', '', 0, 0);
 
 --
 -- Form
@@ -55,7 +61,8 @@ INSERT INTO `core_form_button` (`Button_ID`, `label`, `icon`, `title`, `href`, `
 (NULL, 'Export Events', 'fas fa-file-excel', 'Export Events', '/event/export', 'primary', '', 'event-index', 'link', '', ''),
 (NULL, 'Find Events', 'fas fa-search', 'Find Events', '/event/search', 'primary', '', 'event-index', 'link', '', ''),
 (NULL, 'Export Events', 'fas fa-file-excel', 'Export Events', '#', 'primary initExcelDump', '', 'event-search', 'link', '', ''),
-(NULL, 'New Search', 'fas fa-search', 'New Search', '/event/search', 'primary', '', 'event-search', 'link', '', '');
+(NULL, 'New Search', 'fas fa-search', 'New Search', '/event/search', 'primary', '', 'event-search', 'link', '', ''),
+(NULL, 'Calendar', 'fas fa-calendar-alt', 'Calendar', '/calendar', 'primary', '', 'event-index', 'link', '', '');
 
 --
 -- Fields
@@ -70,5 +77,7 @@ INSERT INTO `user_xp_activity` (`Activity_ID`, `xp_key`, `label`, `xp_base`) VAL
 (NULL, 'event-add', 'Add New Event', '50'),
 (NULL, 'event-edit', 'Edit Event', '5'),
 (NULL, 'event-export', 'Edit Event', '5');
+
+INSERT INTO `settings` (`settings_key`, `settings_value`) VALUES ('event-icon', 'fas fa-calendar-alt');
 
 COMMIT;

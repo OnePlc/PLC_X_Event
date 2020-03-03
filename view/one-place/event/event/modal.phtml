@@ -1,0 +1,175 @@
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="float-right">
+                <div class="row modalBar">
+                    <div class="col-md-2">
+                        <a href="/event/edit/<?=$oEvent->getID()?>">
+                            <i class="fas fa-edit" style="width:25px;"></i>
+                        </a>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="#">
+                            <i class="fas fa-trash" style="width:25px;"></i>
+                        </a>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="#">
+                            <i class="fas fa-envelope" style="width:25px;"></i>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#rerun" class="plc-event-modal-ajax-lnk">
+                            <i class="fas fa-redo" title="<?=$this->translate('Add Rerun')?>" style="width:25px;"></i>
+                        </a>
+                        <span class="badge badge-primary" title="2 <?=$this->translate('Reruns')?>">2</span>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="row py-2">
+                        <div class="col-md-2">
+                            <div style="margin-right:12px; border-radius:50px; width:32px; height:32px; float:left; background:<?=$oCalendar->getColor('background')?>; color:<?=$oCalendar->getColor('text')?>;">
+
+                            </div>
+                        </div>
+                        <div class="col-md-10">
+                            <h2>
+                                <?=$oEvent->getLabel()?>
+                                <br/><small><?=strftime('%A, %d. %B %H:%M',strtotime($oEvent->date_start))?> - <?=strftime('%H:%M',strtotime($oEvent->date_end))?></small>
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col-md-2">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="col-md-10">
+                            <?=$oEvent->getTextField('excerpt')?>
+                        </div>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col-md-2">
+                            <i class="fas fa-align-justify"></i>
+                        </div>
+                        <div class="col-md-10">
+                            <?=$oEvent->getTextField('description')?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <?php if($oEvent->hasFeaturedImage()) { ?>
+                        <div style="max-width:250px; margin:auto;">
+                            <!-- our filepond input -->
+                            <input type="file" name="filepond" id="filepond">
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</div>
+
+<?php if($oEvent->hasFeaturedImage()) { ?>
+    <script>
+        var fieldsetElement<?=$oEvent->getID()?> = document.getElementById('filepond');
+
+        FilePond.registerPlugin(
+            FilePondPluginFileValidateType,
+            FilePondPluginImageExifOrientation,
+            FilePondPluginImagePreview,
+            FilePondPluginImageCrop,
+            FilePondPluginImageResize,
+            FilePondPluginImageTransform
+        );
+        FilePond.create(
+            fieldsetElement<?=$oEvent->getID()?>,
+            {
+                labelIdle: `Drag & Drop your picture or <span class="filepond--label-action">Browse</span>`,
+                imagePreviewHeight: 170,
+                imageCropAspectRatio: '1:1',
+                imageResizeTargetWidth: 200,
+                imageResizeTargetHeight: 200,
+                stylePanelLayout: 'compact circle',
+                styleLoadIndicatorPosition: 'center bottom',
+                styleProgressIndicatorPosition: 'right bottom',
+                styleButtonRemoveItemPosition: 'left bottom',
+                styleButtonProcessItemPosition: 'right bottom',
+            }
+        );
+
+        FilePond.setOptions({
+            server: {
+                process: {
+                    url: '/filepond',
+                    method: 'POST',
+                    withCredentials: false,
+                    headers: {},
+                    timeout: 7000,
+                    onload: (response) => {
+                        console.log(response);
+                    },
+                    onerror: (e) => {
+                        $('#plc-featured-image').printMessage('Fehler',e.detail.error.main,'error');
+                    },
+                    ondata: (formData) => {
+                        formData.append('type', '<?=explode('-',$sFormName)[0]?>');
+                        formData.append('entity_id', '<?=$oEvent->getID()?>');
+                        return formData;
+                    }
+                },
+                load: '/'
+            },
+            <?php if($oEvent->getTextField('featured_image')) { ?>
+            files: [
+                {
+                    // the server file reference
+                    source: '/data/<?=explode('-',$sFormName)[0]?>/<?=$oEvent->getID()?>/<?=$oEvent->getTextField('featured_image')?>',
+
+                    // set type to limbo to tell FilePond this is a temp file
+                    options: {
+                        type: 'local'
+                    }
+                }
+            ]
+            <?php } ?>
+        });
+
+        fieldsetElement<?=$oEvent->getID()?>.addEventListener('FilePond:error', e => {
+            $('#plc-featured-image').printMessage('Fehler',e.detail.error.main,'error');
+        });
+    </script>
+<?php } ?>
+
+<script>
+    $('a.plc-event-modal-ajax-lnk').on('click',function() {
+        var sHref = $(this).attr('href').substring('#'.length);
+
+        // ajax loader
+        $('.modal-content .modal-body').html('<img src="/img/ajax-loader.gif" />');
+
+        if(sHref == 'rerun') {
+            $('.modalBar').html('<div class="col-md-2">\n' +
+                '                        <a href="#<?=$this->oItem->getID()?>" class="eventModalBackLnk" title="Back to Event">\n' +
+                '                            <i class="fas fa-backward" style="width:25px;"></i>\n' +
+                '                        </a>\n' +
+                '                    </div>' +
+                '<div class="col-md-2"></div><a class="plc-event-add-rerun-ajax" href="#" title="Add New Rerun"><i class="fas fa-plus"></i></a>');
+
+            // load rerun list
+            $.post('/event/rerun/<?=$this->oItem->getID()?>', {}, function (retHTML) {
+                $('.modal-content .modal-body').html(retHTML);
+            });
+        }
+
+        return false;
+    });
+</script>

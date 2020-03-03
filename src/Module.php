@@ -60,6 +60,16 @@ class Module {
                     $resultSetPrototype->setArrayObjectPrototype(new Model\Event($dbAdapter));
                     return new TableGateway('event', $dbAdapter, null, $resultSetPrototype);
                 },
+                Model\CalendarTable::class => function($container) {
+                    $tableGateway = $container->get(Model\CalendarTableGateway::class);
+                    return new Model\CalendarTable($tableGateway,$container);
+                },
+                Model\CalendarTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\Calendar($dbAdapter));
+                    return new TableGateway('event_calendar', $dbAdapter, null, $resultSetPrototype);
+                },
             ],
         ];
     }
@@ -102,6 +112,15 @@ class Module {
                 Controller\SearchController::class => function($container) {
                     $oDbAdapter = $container->get(AdapterInterface::class);
                     return new Controller\SearchController(
+                        $oDbAdapter,
+                        $container->get(Model\EventTable::class),
+                        $container
+                    );
+                },
+                # Calendar Controller
+                Controller\CalendarController::class => function($container) {
+                    $oDbAdapter = $container->get(AdapterInterface::class);
+                    return new Controller\CalendarController(
                         $oDbAdapter,
                         $container->get(Model\EventTable::class),
                         $container

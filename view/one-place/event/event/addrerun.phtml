@@ -1,0 +1,20 @@
+<li class="list-group-item">
+    <div class="row">
+        <div class="col-md-5">
+            <input type="date" class="form-control" /> <input type="time" class="form-control" />
+        </div>
+        <div class="col-md-5">
+            <input type="date" class="form-control" /> <input type="time" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <i class="fas fa-save" title="<?=$this->translate('Save Rerun')?>"></i>
+            | <a href="#" class="plc-event-rerun-add-cancel"><i class="fas fa-times"  title="<?=$this->translate('Cancel')?>"></i></a>
+        </div>
+    </div>
+</li>
+<script>
+    $('.plc-event-rerun-add-cancel').on('click',function() {
+        $(this).parent('div').parent('div').parent('li').remove();
+        return false;
+    });
+</script>
