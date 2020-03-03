@@ -4,25 +4,27 @@
             <div class="float-right">
                 <div class="row modalBar">
                     <div class="col-md-2">
-                        <a href="/event/edit/<?=$oEvent->getID()?>">
+                        <a href="/event/edit/<?=$oEvent->getID()?>" class="btn btn-primary">
                             <i class="fas fa-edit" style="width:25px;"></i>
                         </a>
                     </div>
                     <div class="col-md-2">
-                        <a href="#">
-                            <i class="fas fa-trash" style="width:25px;"></i>
-                        </a>
-                    </div>
-                    <div class="col-md-2">
-                        <a href="#">
+                        <a href="#" class="btn btn-primary">
                             <i class="fas fa-envelope" style="width:25px;"></i>
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="#rerun" class="plc-event-modal-ajax-lnk">
+                        <a href="#rerun" class="plc-event-modal-ajax-lnk btn btn-primary">
                             <i class="fas fa-redo" title="<?=$this->translate('Add Rerun')?>" style="width:25px;"></i>
+                            <span class="badge badge-success" title="2 <?=$this->translate('Reruns')?>">2</span>
                         </a>
-                        <span class="badge badge-primary" title="2 <?=$this->translate('Reruns')?>">2</span>
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-2">
+                        <a href="#" class="btn btn-danger">
+                            <i class="fas fa-trash" style="width:25px;"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -157,15 +159,15 @@
         $('.modal-content .modal-body').html('<img src="/img/ajax-loader.gif" />');
 
         if(sHref == 'rerun') {
-            $('.modalBar').html('<div class="col-md-2">\n' +
-                '                        <a href="#<?=$this->oItem->getID()?>" class="eventModalBackLnk" title="Back to Event">\n' +
+            $('.modalBar').html('<div class="col-md-3">\n' +
+                '                        <a href="#<?=$oEvent->getID()?>" class="eventModalBackLnk btn btn-primary" title="Back to Event">\n' +
                 '                            <i class="fas fa-backward" style="width:25px;"></i>\n' +
                 '                        </a>\n' +
                 '                    </div>' +
-                '<div class="col-md-2"></div><a class="plc-event-add-rerun-ajax" href="#" title="Add New Rerun"><i class="fas fa-plus"></i></a>');
+                '<div class="col-md-3"></div><a class="plc-event-add-rerun-ajax btn btn-primary" href="#" title="Add New Rerun"><i class="fas fa-plus"></i></a>');
 
             // load rerun list
-            $.post('/event/rerun/<?=$this->oItem->getID()?>', {}, function (retHTML) {
+            $.post('/event/rerun/<?=$oEvent->getID()?>', {}, function (retHTML) {
                 $('.modal-content .modal-body').html(retHTML);
             });
         }

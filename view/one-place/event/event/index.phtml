@@ -1,8 +1,16 @@
+<?php
+use Application\Controller\CoreController;
+
+$sIcon = (array_key_exists('event-icon',CoreController::$aGlobalSettings))
+    ?  CoreController::$aGlobalSettings['event-icon'] : '';
+?>
 <div class="card">
     <div class="card-header">
         <div class="row">
             <div class="col-md-10">
-                <?= $this->partial('partial/indexheader',['sTitle'=>'Events']) ?>
+                <?= $this->partial('partial/indexheader',[
+                    'sTitle' => 'Events',
+                    'sIcon' => $sIcon]) ?>
             </div>
             <div class="col-md-2 text-right">
                 <select class="form-control">

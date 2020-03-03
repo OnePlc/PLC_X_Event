@@ -32,7 +32,8 @@ INSERT INTO `permission` (`permission_key`, `module`, `label`, `nav_label`, `nav
 ('modal', 'OnePlace\\Event\\Controller\\EventController', 'View Modal', '', '', 0, 0),
 ('rerun', 'OnePlace\\Event\\Controller\\EventController', 'Manage Reruns', '', '', 0, 0),
 ('addrerun', 'OnePlace\\Event\\Controller\\EventController', 'Manage Reruns', '', '', 0, 0),
-('editrerun', 'OnePlace\\Event\\Controller\\EventController', 'Manage Reruns', '', '', 0, 0);
+('editrerun', 'OnePlace\\Event\\Controller\\EventController', 'Manage Reruns', '', '', 0, 0),
+('listcalendars', 'OnePlace\\Event\\Controller\\ApiController', 'List Calendars', '', '', 0, 0);
 
 --
 -- Form

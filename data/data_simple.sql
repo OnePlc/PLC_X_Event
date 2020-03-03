@@ -14,3 +14,9 @@ INSERT INTO `core_form_field` (`Field_ID`, `type`, `label`, `fieldkey`, `tab`, `
 (NULL, 'select', 'web spotlight', 'web_spotlight_idfs', 'event-base', 'event-single', 'col-md-2', '', '/application/selectbool', 0, 1, 0, '', 'OnePlace\\BoolSelect', ''),
 (NULL, 'select', 'confirm', 'event_confirm_idfs', 'event-base', 'event-single', 'col-md-2', '', '/application/selectbool', 0, 1, 0, '', 'OnePlace\\BoolSelect', ''),
 (NULL, 'featuredimage', 'Featured Image', 'featured_image', 'event-base', 'event-single', 'col-md-3', '', '', '0', '1', '0', '', '', '');
+
+--
+-- quick search result display
+--
+INSERT INTO `settings` (`settings_key`, `settings_value`) VALUES
+('quicksearch-event-customresultattribute', '{\"fields\":[\"date_start\"],\"seperator\":\" - \",\"format\":\"datetime\"}');

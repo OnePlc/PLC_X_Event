@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace OnePlace\Event\Controller;
 
 use Application\Controller\CoreApiController;
+use OnePlace\Event\Model\CalendarTable;
 use OnePlace\Event\Model\EventTable;
 use Laminas\View\Model\ViewModel;
 use Laminas\Db\Adapter\AdapterInterface;
@@ -35,7 +36,34 @@ class ApiController extends CoreApiController {
     public function __construct(AdapterInterface $oDbAdapter,EventTable $oTableGateway,$oServiceManager) {
         parent::__construct($oDbAdapter,$oTableGateway,$oServiceManager);
         $this->oTableGateway = $oTableGateway;
+        $this->oCalendarTbl = $oServiceManager->get(CalendarTable::class);
         $this->sSingleForm = 'event-single';
         $this->sApiName = 'Event';
+    }
+
+    public function listcalendarsAction() {
+        $this->layout('layout/json');
+
+        $oItemsDB = $this->oCalendarTbl->fetchAll(false, []);
+        $aItems = [];
+        if(count($oItemsDB) > 0) {
+            foreach($oItemsDB as $oRow) {
+                $aItems[] = ['text' => $oRow->getLabel(),'id' => $oRow->getID()];
+            }
+        }
+
+        /**
+         * Build Select2 JSON Response
+         */
+        $aReturn = [
+            'state'=>'success',
+            'results' => $aItems,
+            'pagination' => (object)['more'=>false],
+        ];
+
+        # Print List with all Entities
+        echo json_encode($aReturn);
+
+        return false;
     }
 }
