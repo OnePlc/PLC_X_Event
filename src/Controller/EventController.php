@@ -47,7 +47,9 @@ class EventController extends CoreEntityController {
         $this->sSingleForm = 'event-single';
         $this->oCalendarTbl = $oServiceManager->get(CalendarTable::class);
 
-        setlocale(LC_TIME, CoreEntityController::$oSession->oUser->lang);
+        if(isset(CoreEntityController::$oSession->oUser)) {
+            setlocale(LC_TIME, CoreEntityController::$oSession->oUser->lang);
+        }
 
         parent::__construct($oDbAdapter,$oTableGateway,$oServiceManager);
 
