@@ -62,6 +62,7 @@ class EventTable extends CoreEntityTable {
     public function saveSingle(Event $oEvent) {
         $aDefaultData = [
             'label' => $oEvent->label,
+            'root_event_idfs' => $oEvent->root_event_idfs,
         ];
 
         return $this->saveSingleEntity($oEvent,'Event_ID',$aDefaultData);

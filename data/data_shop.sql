@@ -28,3 +28,9 @@ INSERT INTO core_form_tab (Tab_ID, form, title, subtitle, icon, counter, sort_id
 ('event-gallery', 'event-single', 'Gallery', 'Images', 'fas fa-images', '', '4', '', ''),
 ('event-gallerysort', 'event-single', 'Gallery Sort', 'sorted', 'fas fa-images', '', '4', '', '');
 
+--
+-- Base Calendar
+--
+INSERT INTO `event_calendar` (`Calendar_ID`, `label`, `color_background`, `color_text`, `type`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES
+(NULL, 'Events', 'green', 'white', 'event', '1', CURRENT_TIME(), '1', CURRENT_TIME());
+

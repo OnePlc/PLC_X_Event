@@ -10,7 +10,9 @@ $sIcon = (array_key_exists('event-icon',CoreController::$aGlobalSettings))
             <div class="col-md-10">
                 <?= $this->partial('partial/indexheader',[
                     'sTitle' => 'Events',
-                    'sIcon' => $sIcon]) ?>
+                    'sIcon' => $sIcon,
+                    'sCount'=>$aItems->getTotalItemCount().' total'
+                ]) ?>
             </div>
             <div class="col-md-2 text-right">
                 <select class="form-control">

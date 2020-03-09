@@ -4,4 +4,11 @@ if(isset($aPartialExtraData)) {
     $aPartialData['aPartialExtraData'] = $aPartialExtraData;
 }
 ?>
+<?php if($oItem->root_event_idfs != 0) { ?>
+    <div class="alert alert-info px-2 py-2">
+        <a href="/event/view/<?=$oItem->root_event_idfs?>" style="color:#fff;">
+            This Event is a Rerun - all Details are on Root Event
+        </a>
+    </div>
+<?php } ?>
 <?= $this->partial('partial/viewform', $aPartialData); ?>

@@ -19,6 +19,7 @@ use Application\Model\CoreEntityModel;
 
 class Event extends CoreEntityModel {
     public $label;
+    public $root_event_idfs;
 
     /**
      * Event constructor.
@@ -45,6 +46,7 @@ class Event extends CoreEntityModel {
     public function exchangeArray(array $aData) {
         $this->id = !empty($aData['Event_ID']) ? $aData['Event_ID'] : 0;
         $this->label = !empty($aData['label']) ? $aData['label'] : '';
+        $this->root_event_idfs = !empty($aData['root_event_idfs']) ? $aData['root_event_idfs'] : 0;
 
         $this->updateDynamicFields($aData);
     }

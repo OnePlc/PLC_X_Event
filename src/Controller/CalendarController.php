@@ -165,7 +165,7 @@ class CalendarController extends CoreEntityController {
 
             if($oEvent->root_event_idfs != 0) {
                 $oRoot = $this->oTableGateway->getSingle($oEvent->root_event_idfs);
-                if(count($oRoot) > 0) {
+                if($oRoot) {
                     $aNewEv['title'] = $oRoot->getLabel();
                     $aNewEv['start'] = $sStart;
                     $aNewEv['excerpt'] = $oRoot->getTextField('excerpt');
