@@ -186,4 +186,21 @@ class EventController extends CoreEntityController {
         return new ViewModel([
         ]);
     }
+
+    public function writeSettingsToChildren($oEvent, $aRawFormData, $bSaveSuccess) {
+        $oHasChildren = $this->oTableGateway->fetchAll(false, ['root_event_idfs' => $oEvent->getID()]);
+
+        $aFormData = $this->parseFormData($_REQUEST);
+
+        if(count($oHasChildren) > 0) {
+            foreach($oHasChildren as $oChild) {
+                // write web show attribute to children
+                $oChild->show_on_web_idfs = $oEvent->show_on_web_idfs;
+                $this->oTableGateway->saveSingle($oChild);
+
+                // write categories to children
+                $this->updateMultiSelectFields($aFormData,$oChild,'event-single');
+            }
+        }
+    }
 }

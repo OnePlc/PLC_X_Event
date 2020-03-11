@@ -77,4 +77,8 @@ class EventTable extends CoreEntityTable {
     public function generateNew() {
         return new Event($this->oTableGateway->getAdapter());
     }
+
+    public function fetchAll($bPaginated = false,$aWhere = [],$sSort = 'date_start ASC') {
+        return parent::fetchAll($bPaginated,$aWhere,$sSort);
+    }
 }

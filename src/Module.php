@@ -23,7 +23,10 @@ use Laminas\ModuleManager\ModuleManager;
 use Laminas\Session\Config\StandardConfig;
 use Laminas\Session\SessionManager;
 use Laminas\Session\Container;
+use Laminas\EventManager\EventInterface as Event;
 use Application\Controller\CoreEntityController;
+use OnePlace\Event\Controller\EventController;
+use OnePlace\Event\Model\EventTable;
 
 class Module {
     /**
@@ -41,6 +44,18 @@ class Module {
      */
     public function getConfig() : array {
         return include __DIR__ . '/../config/module.config.php';
+    }
+
+    public function onBootstrap(Event $e)
+    {
+        // This method is called once the MVC bootstrapping is complete
+        $application = $e->getApplication();
+        $container    = $application->getServiceManager();
+        $oDbAdapter = $container->get(AdapterInterface::class);
+        $tableGateway = $container->get(EventTable::class);
+
+        # Register Filter Plugin Hook
+        CoreEntityController::addHook('event-edit-after-save',(object)['sFunction'=>'writeSettingsToChildren','oItem'=>new EventController($oDbAdapter,$tableGateway,$container)]);
     }
 
     /**

@@ -5,7 +5,7 @@ ADD `excerpt`  VARCHAR (255) NOT NULL DEFAULT '' AFTER `is_daily_event_idfs`,
 ADD `description` TEXT NOT NULL DEFAULT '' AFTER `excerpt`,
 ADD `root_event_idfs` int(11) NOT NULL DEFAULT 0 AFTER `description`,
 ADD `calendar_idfs` int(11)  NOT NULL DEFAULT '0' AFTER `root_event_idfs`,
-ADD `web_show_idfs` tinyint(1) NOT NULL DEFAULT 0 AFTER `calendar_idfs`,
+ADD `show_on_web_idfs` tinyint(1) NOT NULL DEFAULT 0 AFTER `calendar_idfs`,
 ADD `web_spotlight_idfs` tinyint(1) NOT NULL DEFAULT 0 AFTER `web_show_idfs`,
 ADD `featured_image` VARCHAR (255) NOT NULL DEFAULT '' AFTER `label`;
 
