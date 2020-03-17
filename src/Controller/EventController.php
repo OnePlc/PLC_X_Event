@@ -90,7 +90,12 @@ class EventController extends CoreEntityController {
          * event-add-before-save (before save)
          * event-add-after-save (after save)
          */
-        return $this->generateAddView('event');
+
+        if(isset($_REQUEST[$this->sSingleForm.'_ismodal'])) {
+            return $this->generateAddView('event', $this->sSingleForm, 'event-calendar', 'index', 0, [], 'Event saved successfully');
+        } else {
+            return $this->generateAddView('event');
+        }
     }
 
     /**
@@ -135,16 +140,27 @@ class EventController extends CoreEntityController {
         $this->layout('layout/modal');
 
         $iEventID = $this->params()->fromRoute('id', '0');
-        $oEvent = $this->oTableGateway->getSingle($iEventID);
-        $oCalendar = $this->oCalendarTbl->getSingle($oEvent->calendar_idfs);
+        $oEvent = false;
+        $oEventTpl = false;
+        $sDateSelected = '';
+        if($iEventID != 0) {
+            $oEvent = $this->oTableGateway->getSingle($iEventID);
+            $oCalendar = $this->oCalendarTbl->getSingle($oEvent->calendar_idfs);
 
-        $this->layout()->aModalButtons = [];
-        $this->layout()->oItem = $oEvent;
+            $this->layout()->aModalButtons = [];
+            $this->layout()->oItem = $oEvent;
+        } else {
+            $sDateSelected = $_REQUEST['date'];
+            $oCalendar = $this->oCalendarTbl->getSingle('first');
+            $oEventTpl = $this->oTableGateway->generateNew();
+        }
 
         return new ViewModel([
             'oEvent' => $oEvent,
             'oCalendar' => $oCalendar,
             'sFormName' => $this->sSingleForm,
+            'oEventTpl' => $oEventTpl,
+            'sDateSelected' => $sDateSelected,
         ]);
     }
 

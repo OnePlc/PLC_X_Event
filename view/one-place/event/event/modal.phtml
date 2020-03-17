@@ -1,31 +1,65 @@
+<?php
+use Application\Controller\CoreController;
+
+# get default event duration
+# fallback value is 60 minutes
+$iDefaultDuration = 60;
+
+# try to get user setting
+if(CoreController::$oSession->oUser->getSetting('event-default-duration')) {
+    $iDefaultDuration = CoreController::$oSession->oUser->getSetting('event-default-duration');
+} else {
+    # first fallback is global setting
+    if(array_key_exists('calendar-default-event-duration',CoreController::$aGlobalSettings)) {
+        $iDefaultDuration = CoreController::$aGlobalSettings['calendar-default-event-duration'];
+    }
+}
+
+$iDefaultHours = (float)$iDefaultDuration/60;
+$aHoursTmp = explode('.',$iDefaultHours);
+$iDefaultHoursDef = $aHoursTmp[0];
+$iDefaultMinsDef = 0;
+if(isset($aHoursTmp[1])) {
+    $iMins = (float)$aHoursTmp[1]/10;
+    $iDefaultMinsDef = 60*$iMins;
+}
+?>
 <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
         <div class="modal-header">
             <div class="float-right">
                 <div class="row modalBar">
-                    <div class="col-md-2">
-                        <a href="/event/edit/<?=$oEvent->getID()?>" class="btn btn-primary">
-                            <i class="fas fa-edit" style="width:25px;"></i>
-                        </a>
-                    </div>
-                    <div class="col-md-2">
-                        <a href="#" class="btn btn-primary">
-                            <i class="fas fa-envelope" style="width:25px;"></i>
-                        </a>
-                    </div>
-                    <div class="col-md-4">
-                        <a href="#rerun" class="plc-event-modal-ajax-lnk btn btn-primary">
-                            <i class="fas fa-redo" title="<?=$this->translate('Add Rerun')?>" style="width:25px;"></i>
-                            <span class="badge badge-success" title="2 <?=$this->translate('Reruns')?>">2</span>
-                        </a>
-                    </div>
-                    <div class="col-md-2">
-                    </div>
-                    <div class="col-md-2">
-                        <a href="#" class="btn btn-danger">
-                            <i class="fas fa-trash" style="width:25px;"></i>
-                        </a>
-                    </div>
+                    <?php if($oEvent) { ?>
+                        <div class="col-md-2">
+                            <a href="/event/edit/<?=$oEvent->getID()?>" class="btn btn-primary">
+                                <i class="fas fa-edit" style="width:25px;"></i>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#" class="btn btn-primary">
+                                <i class="fas fa-envelope" style="width:25px;"></i>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="#rerun" class="plc-event-modal-ajax-lnk btn btn-primary">
+                                <i class="fas fa-redo" title="<?=$this->translate('Add Rerun')?>" style="width:25px;"></i>
+                                <span class="badge badge-success" title="2 <?=$this->translate('Reruns')?>">2</span>
+                            </a>
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                        <div class="col-md-2">
+                            <a href="#" class="btn btn-danger">
+                                <i class="fas fa-trash" style="width:25px;"></i>
+                            </a>
+                        </div>
+                    <?php } else { ?>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary plc-event-modal-save">
+                                <i class="fas fa-save" style="width:25px;"></i>
+                            </button>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -33,152 +67,288 @@
             </button>
         </div>
         <div class="modal-body">
-            <?php if($oEvent->root_event_idfs != 0) { ?>
-                <div class="alert alert-info px-2 py-2">
-                    <a href="/event/view/<?=$oEvent->root_event_idfs?>" style="color:#fff;">
-                        This Event is a Rerun - all Details are on Root Event
-                    </a>
-                </div>
-            <?php } ?>
-            <div class="row">
-                <div class="col-md-7">
-                    <div class="row py-2">
-                        <div class="col-md-2">
-                            <div style="margin-right:12px; border-radius:50px; width:32px; height:32px; float:left; background:<?=$oCalendar->getColor('background')?>; color:<?=$oCalendar->getColor('text')?>;">
+            <?php if($oEvent) { ?>
+                <?php if($oEvent->root_event_idfs != 0) { ?>
+                    <div class="alert alert-info px-2 py-2">
+                        <a href="/event/view/<?=$oEvent->root_event_idfs?>" style="color:#fff;">
+                            This Event is a Rerun - all Details are on Root Event
+                        </a>
+                    </div>
+                <?php } ?>
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="row py-2">
+                            <div class="col-md-2">
+                                <div style="margin-right:12px; border-radius:50px; width:32px; height:32px; float:left; background:<?=$oCalendar->getColor('background')?>; color:<?=$oCalendar->getColor('text')?>;">
 
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <h2>
+                                    <?=$oEvent->getLabel()?>
+                                    <br/><small><?=utf8_encode(strftime('%A, %d. %B %H:%M',strtotime($oEvent->date_start)))?> - <?=strftime('%H:%M',strtotime($oEvent->date_end))?></small>
+                                </h2>
                             </div>
                         </div>
-                        <div class="col-md-10">
-                            <h2>
-                                <?=$oEvent->getLabel()?>
-                                <br/><small><?=utf8_encode(strftime('%A, %d. %B %H:%M',strtotime($oEvent->date_start)))?> - <?=strftime('%H:%M',strtotime($oEvent->date_end))?></small>
-                            </h2>
+                        <div class="row py-1">
+                            <div class="col-md-2">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="col-md-10">
+                                <?=$oEvent->getTextField('excerpt')?>
+                            </div>
+                        </div>
+                        <div class="row py-1">
+                            <div class="col-md-2">
+                                <i class="fas fa-align-justify"></i>
+                            </div>
+                            <div class="col-md-10">
+                                <?=$oEvent->getTextField('description')?>
+                            </div>
                         </div>
                     </div>
-                    <div class="row py-1">
-                        <div class="col-md-2">
-                            <i class="fas fa-info-circle"></i>
-                        </div>
-                        <div class="col-md-10">
-                            <?=$oEvent->getTextField('excerpt')?>
-                        </div>
-                    </div>
-                    <div class="row py-1">
-                        <div class="col-md-2">
-                            <i class="fas fa-align-justify"></i>
-                        </div>
-                        <div class="col-md-10">
-                            <?=$oEvent->getTextField('description')?>
-                        </div>
+                    <div class="col-md-5">
+                        <?php if($oEvent->hasFeaturedImage()) { ?>
+                            <div style="max-width:250px; margin:auto;">
+                                <!-- our filepond input -->
+                                <input type="file" name="filepond" id="filepond">
+                            </div>
+                        <?php } ?>
                     </div>
                 </div>
-                <div class="col-md-5">
-                    <?php if($oEvent->hasFeaturedImage()) { ?>
-                        <div style="max-width:250px; margin:auto;">
-                            <!-- our filepond input -->
-                            <input type="file" name="filepond" id="filepond">
+            <?php } else { ?>
+                <form action="/event/add" method="POST" id="plc-event-modal-form">
+                    <input type="hidden" name="<?=$sFormName?>_ismodal" value="1" />
+                    <input type="hidden" name="<?=$sFormName?>_calendar_idfs" value="<?=$oCalendar->getID()?>" />
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="row py-2">
+                                <div class="col-md-2">
+                                    <div style="margin-right:12px; border-radius:50px; width:32px; height:32px; float:left; background:<?=$oCalendar->getColor('background')?>; color:<?=$oCalendar->getColor('text')?>;">
+
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <input type="text" name="<?=$sFormName?>_label" class="form-control" value="" placeholder="Event Name" />
+                                    <div class="row">
+                                        <?php $sVal = ($sDateSelected != '') ? $sDateSelected : ''?>
+                                        <div class="col-md-7">
+                                            <input type="date" name="<?=$sFormName?>_date_start" class="form-control" value="<?=$sVal?>" />
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="time" name="<?=$sFormName?>_date_start-time" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <?php $sVal = ($sDateSelected != '') ? $sDateSelected : ''?>
+                                        <div class="col-md-7">
+                                            <input type="date" name="<?=$sFormName?>_date_end" class="form-control" value="<?=$sVal?>" />
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="time" name="<?=$sFormName?>_date_end-time" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row py-1">
+                                <div class="col-md-2">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="col-md-10">
+                                    <input type="text" name="<?=$sFormName?>_excerpt" class="form-control" value="" />
+                                </div>
+                            </div>
+                            <div class="row py-1">
+                                <div class="col-md-2">
+                                    <i class="fas fa-cogs"></i>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="row">
+                                        <?php if(isset($oEventTpl->web_show_idfs)) { ?>
+                                        <div class="col-md-12">
+                                            <input type="checkbox" name="<?=$sFormName?>_web_show_idfs" class="form-control" value="1" style="width:40px; float:left" />
+                                            <label for="<?=$sFormName?>_web_show_idfs" style="float:left; margin-top:8px; margin-left:-6px;">
+                                                <?=$this->translate('Show on Web')?>
+                                            </label>
+                                        </div>
+                                        <?php } ?>
+                                        <?php if(isset($oEventTpl->web_spotlight_idfs)) { ?>
+                                        <div class="col-md-12">
+                                            <input type="checkbox" name="<?=$sFormName?>_web_spotlight_idfs" class="form-control" value="1" style="width:40px; float:left" />
+                                            <label for="<?=$sFormName?>_web_spotlight_idfs" style="float:left; margin-top:8px; margin-left:-6px;">
+                                                <?=$this->translate('Web Highlight')?>
+                                            </label>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    <?php } ?>
-                </div>
-            </div>
+                        <div class="col-md-5">
+                            <div class="alert alert-info px-2 py-2">
+                                Save Event to upload image
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="row py-1">
+                            <div class="col-md-12">
+                                <textarea name="<?=$sFormName?>_description" class="form-control plcnote" ></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            <?php } ?>
         </div>
         <div class="modal-footer">
         </div>
     </div>
 </div>
 
-<?php if($oEvent->hasFeaturedImage()) { ?>
-    <script>
-        var fieldsetElement<?=$oEvent->getID()?> = document.getElementById('filepond');
+<?php if($oEvent) { ?>
+    <?php if($oEvent->hasFeaturedImage()) { ?>
+        <script>
+            var fieldsetElement<?=$oEvent->getID()?> = document.getElementById('filepond');
 
-        FilePond.registerPlugin(
-            FilePondPluginFileValidateType,
-            FilePondPluginImageExifOrientation,
-            FilePondPluginImagePreview,
-            FilePondPluginImageCrop,
-            FilePondPluginImageResize,
-            FilePondPluginImageTransform
-        );
-        FilePond.create(
-            fieldsetElement<?=$oEvent->getID()?>,
-            {
-                labelIdle: `Drag & Drop your picture or <span class="filepond--label-action">Browse</span>`,
-                imagePreviewHeight: 170,
-                imageCropAspectRatio: '1:1',
-                imageResizeTargetWidth: 200,
-                imageResizeTargetHeight: 200,
-                stylePanelLayout: 'compact circle',
-                styleLoadIndicatorPosition: 'center bottom',
-                styleProgressIndicatorPosition: 'right bottom',
-                styleButtonRemoveItemPosition: 'left bottom',
-                styleButtonProcessItemPosition: 'right bottom',
-            }
-        );
-
-        FilePond.setOptions({
-            server: {
-                process: {
-                    url: '/filepond',
-                    method: 'POST',
-                    withCredentials: false,
-                    headers: {},
-                    timeout: 7000,
-                    onload: (response) => {
-                        console.log(response);
-                    },
-                    onerror: (e) => {
-                        $('#plc-featured-image').printMessage('Fehler',e.detail.error.main,'error');
-                    },
-                    ondata: (formData) => {
-                        formData.append('type', '<?=explode('-',$sFormName)[0]?>');
-                        formData.append('entity_id', '<?=$oEvent->getID()?>');
-                        return formData;
-                    }
-                },
-                load: '/'
-            },
-            <?php if($oEvent->getTextField('featured_image')) { ?>
-            files: [
+            FilePond.registerPlugin(
+                FilePondPluginFileValidateType,
+                FilePondPluginImageExifOrientation,
+                FilePondPluginImagePreview,
+                FilePondPluginImageCrop,
+                FilePondPluginImageResize,
+                FilePondPluginImageTransform
+            );
+            FilePond.create(
+                fieldsetElement<?=$oEvent->getID()?>,
                 {
-                    // the server file reference
-                    source: '/data/<?=explode('-',$sFormName)[0]?>/<?=$oEvent->getID()?>/<?=$oEvent->getTextField('featured_image')?>',
-
-                    // set type to limbo to tell FilePond this is a temp file
-                    options: {
-                        type: 'local'
-                    }
+                    labelIdle: `Drag & Drop your picture or <span class="filepond--label-action">Browse</span>`,
+                    imagePreviewHeight: 170,
+                    imageCropAspectRatio: '1:1',
+                    imageResizeTargetWidth: 200,
+                    imageResizeTargetHeight: 200,
+                    stylePanelLayout: 'compact circle',
+                    styleLoadIndicatorPosition: 'center bottom',
+                    styleProgressIndicatorPosition: 'right bottom',
+                    styleButtonRemoveItemPosition: 'left bottom',
+                    styleButtonProcessItemPosition: 'right bottom',
                 }
-            ]
-            <?php } ?>
-        });
+            );
 
-        fieldsetElement<?=$oEvent->getID()?>.addEventListener('FilePond:error', e => {
-            $('#plc-featured-image').printMessage('Fehler',e.detail.error.main,'error');
+            FilePond.setOptions({
+                server: {
+                    process: {
+                        url: '/filepond',
+                        method: 'POST',
+                        withCredentials: false,
+                        headers: {},
+                        timeout: 7000,
+                        onload: (response) => {
+                            console.log(response);
+                        },
+                        onerror: (e) => {
+                            $('#plc-featured-image').printMessage('Fehler',e.detail.error.main,'error');
+                        },
+                        ondata: (formData) => {
+                            formData.append('type', '<?=explode('-',$sFormName)[0]?>');
+                            formData.append('entity_id', '<?=$oEvent->getID()?>');
+                            return formData;
+                        }
+                    },
+                    load: '/'
+                },
+                <?php if($oEvent->getTextField('featured_image')) { ?>
+                files: [
+                    {
+                        // the server file reference
+                        source: '/data/<?=explode('-',$sFormName)[0]?>/<?=$oEvent->getID()?>/<?=$oEvent->getTextField('featured_image')?>',
+
+                        // set type to limbo to tell FilePond this is a temp file
+                        options: {
+                            type: 'local'
+                        }
+                    }
+                ]
+                <?php } ?>
+            });
+
+            fieldsetElement<?=$oEvent->getID()?>.addEventListener('FilePond:error', e => {
+                $('#plc-featured-image').printMessage('Fehler',e.detail.error.main,'error');
+            });
+        </script>
+    <?php } ?>
+
+
+    <script>
+        $('a.plc-event-modal-ajax-lnk').on('click',function() {
+            var sHref = $(this).attr('href').substring('#'.length);
+
+            // ajax loader
+            $('.modal-content .modal-body').html('<img src="/img/ajax-loader.gif" />');
+
+            if(sHref == 'rerun') {
+                $('.modalBar').html('<div class="col-md-3">\n' +
+                    '                        <a href="#<?=$oEvent->getID()?>" class="eventModalBackLnk btn btn-primary" title="Back to Event">\n' +
+                    '                            <i class="fas fa-backward" style="width:25px;"></i>\n' +
+                    '                        </a>\n' +
+                    '                    </div>' +
+                    '<div class="col-md-3"></div><a class="plc-event-add-rerun-ajax btn btn-primary" href="#" title="Add New Rerun"><i class="fas fa-plus"></i></a>');
+
+                // load rerun list
+                $.post('/event/rerun/<?=$oEvent->getID()?>', {}, function (retHTML) {
+                    $('.modal-content .modal-body').html(retHTML);
+                });
+            }
+
+            return false;
         });
     </script>
 <?php } ?>
-
 <script>
-    $('a.plc-event-modal-ajax-lnk').on('click',function() {
-        var sHref = $(this).attr('href').substring('#'.length);
+    $('.plcnote').summernote({
+        height: 150
+    });
 
-        // ajax loader
-        $('.modal-content .modal-body').html('<img src="/img/ajax-loader.gif" />');
-
-        if(sHref == 'rerun') {
-            $('.modalBar').html('<div class="col-md-3">\n' +
-                '                        <a href="#<?=$oEvent->getID()?>" class="eventModalBackLnk btn btn-primary" title="Back to Event">\n' +
-                '                            <i class="fas fa-backward" style="width:25px;"></i>\n' +
-                '                        </a>\n' +
-                '                    </div>' +
-                '<div class="col-md-3"></div><a class="plc-event-add-rerun-ajax btn btn-primary" href="#" title="Add New Rerun"><i class="fas fa-plus"></i></a>');
-
-            // load rerun list
-            $.post('/event/rerun/<?=$oEvent->getID()?>', {}, function (retHTML) {
-                $('.modal-content .modal-body').html(retHTML);
-            });
-        }
-
+    $('.plc-event-modal-save').on('click', function() {
+        $('#plc-event-modal-form').submit();
         return false;
+    });
+</script>
+<script>
+    /**
+     * Copy Start to End Date if it is empty
+     */
+    $('input[name="<?=$sFormName?>_date_start"]').on('blur', function () {
+        var curEndDate =  $('input[name="<?=$sFormName?>_date_end"]').val();
+        if(curEndDate == '') {
+            $('input[name="<?=$sFormName?>_date_end"]').val($(this).val());
+        }
+    });
+
+    /**
+     * Copy Start Time + default event time to End Date if it is empty
+     */
+    $('input[name="<?=$sFormName?>_date_start-time"]').on('blur', function () {
+        var curEndDateTime =  $('input[name="<?=$sFormName?>_date_end-time"]').val();
+        if(curEndDateTime == '') {
+            var curStart = $(this).val();
+            var curHours = parseFloat(curStart.split(':')[0]);
+            var curMins = parseFloat(curStart.split(':')[1]);
+            curHours=curHours+<?=$iDefaultHoursDef?>;
+            curMins=curMins+<?=$iDefaultMinsDef?>;
+            if(curMins == 60) {
+                curMins = '00';
+                curHours++;
+            } else {
+                if(curMins > 60) {
+                    curMins = curMins-60;
+                    if(curMins < 10) {
+                        curMins = '0'+curMins;
+                    }
+                    curHours++;
+                }
+            }
+            curStart = curHours+':'+curMins;
+            $('input[name="<?=$sFormName?>_date_end-time"]').val(curStart);
+        }
     });
 </script>

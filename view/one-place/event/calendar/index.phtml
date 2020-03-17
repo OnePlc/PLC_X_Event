@@ -43,7 +43,7 @@
             },
             dateClick: function(info) {
                 var sDateSelected = info.dateStr;
-                $.get('/event/add/0-default',{mode:'modal',goto:'general',date:sDateSelected},function(retModal) {
+                $.get('/event/modal/0',{mode:'modal',goto:'general',date:sDateSelected},function(retModal) {
                     $('#exampleModalCenter').html(retModal);
                     $('#exampleModalCenter').modal('toggle');
                 });
