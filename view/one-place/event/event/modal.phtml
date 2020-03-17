@@ -29,9 +29,9 @@ if(isset($aHoursTmp[1])) {
         <div class="modal-header">
             <div class="float-right">
                 <div class="row modalBar">
-                    <?php if($oEvent) { ?>
+                    <?php if($oEvent && $sFormMode != 'edit') { ?>
                         <div class="col-md-2">
-                            <a href="/event/edit/<?=$oEvent->getID()?>" class="btn btn-primary">
+                            <a href="#<?=$oEvent->getID()?>" class="btn btn-primary plc-event-edit-modal">
                                 <i class="fas fa-edit" style="width:25px;"></i>
                             </a>
                         </div>
@@ -67,7 +67,7 @@ if(isset($aHoursTmp[1])) {
             </button>
         </div>
         <div class="modal-body">
-            <?php if($oEvent) { ?>
+            <?php if($oEvent && $sFormMode != 'edit') { ?>
                 <?php if($oEvent->root_event_idfs != 0) { ?>
                     <div class="alert alert-info px-2 py-2">
                         <a href="/event/view/<?=$oEvent->root_event_idfs?>" style="color:#fff;">
@@ -116,9 +116,14 @@ if(isset($aHoursTmp[1])) {
                         <?php } ?>
                     </div>
                 </div>
-            <?php } else { ?>
-                <form action="/event/add" method="POST" id="plc-event-modal-form">
+            <?php } else {
+                $sFormAction = ($oEvent) ? '/event/edit/'.$oEvent->getID() : '/event/add';
+                ?>
+                <form action="<?=$sFormAction?>" method="POST" id="plc-event-modal-form">
                     <input type="hidden" name="<?=$sFormName?>_ismodal" value="1" />
+                    <?php if($oEvent) { ?>
+                        <input type="hidden" name="Item_ID" value="<?=$oEvent->getID()?>" />
+                    <?php } ?>
                     <input type="hidden" name="<?=$sFormName?>_calendar_idfs" value="<?=$oCalendar->getID()?>" />
                     <div class="row">
                         <div class="col-md-7">
@@ -129,23 +134,27 @@ if(isset($aHoursTmp[1])) {
                                     </div>
                                 </div>
                                 <div class="col-md-10">
-                                    <input type="text" name="<?=$sFormName?>_label" class="form-control" value="" placeholder="Event Name" />
+                                    <input type="text" name="<?=$sFormName?>_label" class="form-control" value="<?=($oEvent) ? $oEvent->getLabel() : ''?>" placeholder="Event Name" />
                                     <div class="row">
                                         <?php $sVal = ($sDateSelected != '') ? $sDateSelected : ''?>
+                                        <?php $sVal = ($oEvent) ? date('Y-m-d',strtotime($oEvent->date_start)) : $sVal?>
                                         <div class="col-md-7">
                                             <input type="date" name="<?=$sFormName?>_date_start" class="form-control" value="<?=$sVal?>" />
                                         </div>
+                                        <?php $sVal = ($oEvent) ? date('H:i',strtotime($oEvent->date_start)) : $sVal?>
                                         <div class="col-md-5">
-                                            <input type="time" name="<?=$sFormName?>_date_start-time" class="form-control" />
+                                            <input type="time" name="<?=$sFormName?>_date_start-time" class="form-control" value="<?=$sVal?>" />
                                         </div>
                                     </div>
                                     <div class="row">
                                         <?php $sVal = ($sDateSelected != '') ? $sDateSelected : ''?>
+                                        <?php $sVal = ($oEvent) ? date('Y-m-d',strtotime($oEvent->date_end)) : $sVal?>
                                         <div class="col-md-7">
                                             <input type="date" name="<?=$sFormName?>_date_end" class="form-control" value="<?=$sVal?>" />
                                         </div>
+                                        <?php $sVal = ($oEvent) ? date('H:i',strtotime($oEvent->date_end)) : $sVal?>
                                         <div class="col-md-5">
-                                            <input type="time" name="<?=$sFormName?>_date_end-time" class="form-control" />
+                                            <input type="time" name="<?=$sFormName?>_date_end-time" class="form-control" value="<?=$sVal?>" />
                                         </div>
                                     </div>
                                 </div>
@@ -155,7 +164,7 @@ if(isset($aHoursTmp[1])) {
                                     <i class="fas fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-10">
-                                    <input type="text" name="<?=$sFormName?>_excerpt" class="form-control" value="" />
+                                    <input type="text" name="<?=$sFormName?>_excerpt" class="form-control" value="<?=($oEvent) ? $oEvent->getTextField('excerpt') : ''?>" />
                                 </div>
                             </div>
                             <div class="row py-1">
@@ -164,17 +173,21 @@ if(isset($aHoursTmp[1])) {
                                 </div>
                                 <div class="col-md-10">
                                     <div class="row">
-                                        <?php if(isset($oEventTpl->web_show_idfs)) { ?>
+                                        <?php if(isset($oEventTpl->web_show_idfs) || isset($oEvent->web_show_idfs)) { ?>
                                         <div class="col-md-12">
-                                            <input type="checkbox" name="<?=$sFormName?>_web_show_idfs" class="form-control" value="1" style="width:40px; float:left" />
+                                            <?php $sChecked = ($oEvent) ? $oEvent->getTextField('web_show_idfs') : '' ?>
+                                            <?php $sChecked = ($sChecked == 1) ? $sChecked = ' checked' : '' ?>
+                                            <input type="checkbox" name="<?=$sFormName?>_web_show_idfs" class="form-control" value="1" style="width:40px; float:left" <?=$sChecked?> />
                                             <label for="<?=$sFormName?>_web_show_idfs" style="float:left; margin-top:8px; margin-left:-6px;">
                                                 <?=$this->translate('Show on Web')?>
                                             </label>
                                         </div>
                                         <?php } ?>
-                                        <?php if(isset($oEventTpl->web_spotlight_idfs)) { ?>
+                                        <?php if(isset($oEventTpl->web_spotlight_idfs) || isset($oEvent->web_spotlight_idfs)) { ?>
                                         <div class="col-md-12">
-                                            <input type="checkbox" name="<?=$sFormName?>_web_spotlight_idfs" class="form-control" value="1" style="width:40px; float:left" />
+                                            <?php $sChecked = ($oEvent) ? $oEvent->getTextField('web_spotlight_idfs') : '' ?>
+                                            <?php $sChecked = ($sChecked == 1) ? $sChecked = ' checked' : '' ?>
+                                            <input type="checkbox" name="<?=$sFormName?>_web_spotlight_idfs" class="form-control" value="1" style="width:40px; float:left"<?=$sChecked?> />
                                             <label for="<?=$sFormName?>_web_spotlight_idfs" style="float:left; margin-top:8px; margin-left:-6px;">
                                                 <?=$this->translate('Web Highlight')?>
                                             </label>
@@ -185,15 +198,22 @@ if(isset($aHoursTmp[1])) {
                             </div>
                         </div>
                         <div class="col-md-5">
-                            <div class="alert alert-info px-2 py-2">
-                                Save Event to upload image
-                            </div>
+                            <?php if($oEvent) { ?>
+                                <div style="max-width:250px; margin:auto;">
+                                    <!-- our filepond input -->
+                                    <input type="file" name="filepond" id="filepond">
+                                </div>
+                            <?php } else { ?>
+                                <div class="alert alert-info px-2 py-2">
+                                    Save Event to upload image
+                                </div>
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="row">
                         <div class="row py-1">
                             <div class="col-md-12">
-                                <textarea name="<?=$sFormName?>_description" class="form-control plcnote" ></textarea>
+                                <textarea name="<?=$sFormName?>_description" class="form-control plcnote" ><?=($oEvent) ? $oEvent->getTextField('description') : ''?></textarea>
                             </div>
                         </div>
                     </div>
@@ -299,6 +319,15 @@ if(isset($aHoursTmp[1])) {
                 });
             }
 
+            return false;
+        });
+
+
+        $('.plc-event-edit-modal').on('click', function() {
+            // load rerun list
+            $.post('/event/modal/<?=$oEvent->getID()?>', {form:'edit'}, function (retHTML) {
+                $('.modal-dialog').replaceWith(retHTML);
+            });
             return false;
         });
     </script>

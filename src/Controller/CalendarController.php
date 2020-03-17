@@ -65,6 +65,8 @@ class CalendarController extends CoreEntityController {
     public function indexAction() {
         $this->setThemeBasedLayout('calendar');
 
+        $iEventShowID = $this->params()->fromRoute('id', 0);
+
         $aEventSources = [];
         $aCalendars = [];
         $aCalendarsDB = $this->oCalendarTbl->fetchAll(false,[]);
@@ -81,7 +83,7 @@ class CalendarController extends CoreEntityController {
             'aEventSources' => $aEventSources,
             'dJump' => '',
             'aCalendars' => $aCalendars,
-            'iEventSelID' => false,
+            'iEventSelID' => $iEventShowID,
         ]);
     }
 

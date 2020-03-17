@@ -65,8 +65,8 @@
         <?php } ?>
 
         <?php
-        if($iEventSelID) { ?>
-        $.post('/calendar/event/view/<?=$iEventSelID?>',{mode:'modal',goto:'general'},function(retModal) {
+        if($iEventSelID != 0) { ?>
+        $.post('/event/modal/<?=$iEventSelID?>',{mode:'modal',goto:'general'},function(retModal) {
             $('#exampleModalCenter').html(retModal);
             $('#exampleModalCenter').modal('toggle');
         });

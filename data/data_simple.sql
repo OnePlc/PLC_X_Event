@@ -31,3 +31,9 @@ INSERT INTO `event_calendar` (`Calendar_ID`, `label`, `color_background`, `color
 -- default event duration ( global value )
 --
 INSERT INTO `settings` (`settings_key`, `settings_value`) VALUES ('calendar-default-event-duration', '90');
+
+--
+-- quicksearch link to calendar
+--
+INSERT INTO `settings` (`settings_key`, `settings_value`) VALUES
+('quicksearch-event-viewlink', '/calendar/index/##ID##');

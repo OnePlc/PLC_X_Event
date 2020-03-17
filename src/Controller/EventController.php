@@ -115,7 +115,11 @@ class EventController extends CoreEntityController {
          * event-edit-before-save (before save)
          * event-edit-after-save (after save)
          */
-        return $this->generateEditView('event');
+        if(isset($_REQUEST[$this->sSingleForm.'_ismodal'])) {
+            return $this->generateEditView('event', $this->sSingleForm, 'event-calendar', 'index', 0, [], 'Event saved successfully');
+        } else {
+            return $this->generateEditView('event');
+        }
     }
 
     /**
@@ -140,6 +144,7 @@ class EventController extends CoreEntityController {
         $this->layout('layout/modal');
 
         $iEventID = $this->params()->fromRoute('id', '0');
+        $sFormMode = (isset($_REQUEST['form'])) ? $_REQUEST['form'] : 'view';
         $oEvent = false;
         $oEventTpl = false;
         $sDateSelected = '';
@@ -157,6 +162,7 @@ class EventController extends CoreEntityController {
 
         return new ViewModel([
             'oEvent' => $oEvent,
+            'sFormMode' => $sFormMode,
             'oCalendar' => $oCalendar,
             'sFormName' => $this->sSingleForm,
             'oEventTpl' => $oEventTpl,
