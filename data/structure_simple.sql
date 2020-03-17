@@ -15,7 +15,11 @@ CREATE TABLE `event_calendar` (
   `label` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `color_background` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `color_text` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL
+  `type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_date` datetime NOT NULL,
+  `modified_by` int(11) NOT NULL,
+  `modified_date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE `event_calendar`

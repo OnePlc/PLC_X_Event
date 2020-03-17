@@ -1,8 +1,74 @@
 <?php
+
+use Application\Controller\CoreController;
+
 $aPartialData = ['sFormName'=>$sFormName];
 if(isset($aPartialExtraData)) {
     $aPartialData['aPartialExtraData'] = $aPartialExtraData;
 }
+
+# get default event duration
+# fallback value is 60 minutes
+$iDefaultDuration = 60;
+
+# try to get user setting
+if(CoreController::$oSession->oUser->getSetting('event-default-duration')) {
+    $iDefaultDuration = CoreController::$oSession->oUser->getSetting('event-default-duration');
+} else {
+    # first fallback is global setting
+    if(array_key_exists('calendar-default-event-duration',CoreController::$aGlobalSettings)) {
+        $iDefaultDuration = CoreController::$aGlobalSettings['calendar-default-event-duration'];
+    }
+}
+
+$iDefaultHours = (float)$iDefaultDuration/60;
+$aHoursTmp = explode('.',$iDefaultHours);
+$iDefaultHoursDef = $aHoursTmp[0];
+$iDefaultMinsDef = 0;
+if(isset($aHoursTmp[1])) {
+    $iMins = (float)$aHoursTmp[1]/10;
+    $iDefaultMinsDef = 60*$iMins;
+}
 ?>
 <?= $this->partial('partial/formheader',['sTitle'=>'Add new Event']) ?>
 <?= $this->partial('partial/basicform', $aPartialData); ?>
+
+<script>
+    /**
+     * Copy Start to End Date if it is empty
+     */
+    $('input[name="<?=$sFormName?>_date_start"]').on('blur', function () {
+       var curEndDate =  $('input[name="<?=$sFormName?>_date_end"]').val();
+       if(curEndDate == '') {
+           $('input[name="<?=$sFormName?>_date_end"]').val($(this).val());
+       }
+    });
+
+    /**
+     * Copy Start Time + default event time to End Date if it is empty
+     */
+    $('input[name="<?=$sFormName?>_date_start-time"]').on('blur', function () {
+        var curEndDateTime =  $('input[name="<?=$sFormName?>_date_end-time"]').val();
+        if(curEndDateTime == '') {
+            var curStart = $(this).val();
+            var curHours = parseFloat(curStart.split(':')[0]);
+            var curMins = parseFloat(curStart.split(':')[1]);
+            curHours=curHours+<?=$iDefaultHoursDef?>;
+            curMins=curMins+<?=$iDefaultMinsDef?>;
+            if(curMins == 60) {
+                curMins = '00';
+                curHours++;
+            } else {
+                if(curMins > 60) {
+                    curMins = curMins-60;
+                    if(curMins < 10) {
+                        curMins = '0'+curMins;
+                    }
+                    curHours++;
+                }
+            }
+            curStart = curHours+':'+curMins;
+            $('input[name="<?=$sFormName?>_date_end-time"]').val(curStart);
+        }
+    });
+</script>
