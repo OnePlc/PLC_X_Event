@@ -79,6 +79,18 @@ class CalendarController extends CoreEntityController {
             $aCalendars[] = $oCal;
         }
 
+        /**
+         * TimeSlot Plugin
+         */
+        if(isset(CoreEntityController::$aGlobalSettings['calendar-timeslots'])) {
+            $iContactID = CoreEntityController::$oSession->oUser->getSetting('weos-base-contact');
+
+            $aEventSources[] = (object)[
+                'url' => '/timeslots/' . $iContactID,
+                'display' => 'background',
+            ];
+        }
+
         return new ViewModel([
             'aEventSources' => $aEventSources,
             'dJump' => '',

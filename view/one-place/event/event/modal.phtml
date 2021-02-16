@@ -136,18 +136,19 @@ if(isset($aHoursTmp[1])) {
                                 <div class="col-md-10">
                                     <input type="text" name="<?=$sFormName?>_label" class="form-control" value="<?=($oEvent) ? $oEvent->getLabel() : ''?>" placeholder="Event Name" />
                                     <div class="row">
-                                        <?php $sVal = ($sDateSelected != '') ? $sDateSelected : ''?>
+                                        <?php $sVal = ($sDateSelected != '') ? explode('T',$sDateSelected)[0] : ''?>
                                         <?php $sVal = ($oEvent) ? date('Y-m-d',strtotime($oEvent->date_start)) : $sVal?>
                                         <div class="col-md-7">
                                             <input type="date" name="<?=$sFormName?>_date_start" class="form-control" value="<?=$sVal?>" />
                                         </div>
+                                        <?php $sVal = ($sDateSelected != '') ? substr(explode('T',$sDateSelected)[1],0,5) : ''?>
                                         <?php $sVal = ($oEvent) ? date('H:i',strtotime($oEvent->date_start)) : $sVal?>
                                         <div class="col-md-5">
                                             <input type="time" name="<?=$sFormName?>_date_start-time" class="form-control" value="<?=$sVal?>" />
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <?php $sVal = ($sDateSelected != '') ? $sDateSelected : ''?>
+                                        <?php $sVal = ($sDateSelected != '') ? explode('T',$sDateSelected)[0] : ''?>
                                         <?php $sVal = ($oEvent) ? date('Y-m-d',strtotime($oEvent->date_end)) : $sVal?>
                                         <div class="col-md-7">
                                             <input type="date" name="<?=$sFormName?>_date_end" class="form-control" value="<?=$sVal?>" />

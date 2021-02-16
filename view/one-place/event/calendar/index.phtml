@@ -6,6 +6,12 @@
  * Time: 20:49
  */
 
+$this->InlineScript()
+    ->appendFile($this->basePath() . '/vendor/oneplace-event/lib/@fullcalendar/main.min.js')
+    ->appendFile($this->basePath() . '/vendor/oneplace-event/lib/@fullcalendar/locales-all.min.js');
+
+$this->headLink()
+    ->appendStylesheet($this->basePath() . '/vendor/oneplace-event/lib/@fullcalendar/main.min.css')
 ?>
 <div class="row">
     <div class="col-md-2">
@@ -25,16 +31,17 @@
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 </div>
 <script>
+
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
-
         var calendar = new FullCalendar.Calendar(calendarEl, {
-            plugins: [ 'dayGrid', 'timeGrid', 'list', 'bootstrap','interaction'],
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-            },
+            initialView: 'timeGridWeek',
+            navLinks: true, // can click day/week names to navigate views
+            //editable: true,
+            defaultDate: '<?=date('Y-m-d',time())?>',
+            locale: 'de',
+            weekNumbers: true,
+            themeSystem: 'bootstrap',
             eventClick: function(info) {
                 $.post('/event/modal/'+info.event.id,{mode:'modal',goto:'general'},function(retModal) {
                     $('#exampleModalCenter').html(retModal);
@@ -48,16 +55,8 @@
                     $('#exampleModalCenter').modal('toggle');
                 });
             },
-            locale: 'de',
-            weekNumbers: true,
-            themeSystem: 'bootstrap',
-            defaultDate: '<?=date('Y-m-d',time())?>',
-            navLinks: true, // can click day/week names to navigate views
-            editable: true,
-            eventLimit: true, // allow "more" link when too many events
             eventSources: <?=json_encode($aEventSources)?>
         });
-
         calendar.render();
 
         <?php if($dJump != '') { ?>
