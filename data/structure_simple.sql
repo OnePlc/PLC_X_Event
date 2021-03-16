@@ -2,6 +2,7 @@ ALTER TABLE `event` ADD  `date_start` datetime  NOT NULL DEFAULT '0000-00-00 00:
 ADD `date_end` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `date_start`,
 ADD `is_daily_event_idfs`int(11) NOT NULL DEFAULT '0' AFTER `date_end`,
 ADD `excerpt`  VARCHAR (255) NOT NULL DEFAULT '' AFTER `is_daily_event_idfs`,
+ADD `is_confirmed` BOOLEAN NOT NULL DEFAULT TRUE AFTER `Event_ID`,
 ADD `description` TEXT NOT NULL DEFAULT '' AFTER `excerpt`,
 ADD `root_event_idfs` int(11) NOT NULL DEFAULT 0 AFTER `description`,
 ADD `calendar_idfs` int(11)  NOT NULL DEFAULT '0' AFTER `root_event_idfs`,
