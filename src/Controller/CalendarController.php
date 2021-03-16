@@ -24,6 +24,7 @@ use OnePlace\Event\Model\Event;
 use OnePlace\Event\Model\EventTable;
 use Laminas\View\Model\ViewModel;
 use Laminas\Db\Adapter\AdapterInterface;
+use OnePlace\Event\Model\iCal;
 
 class CalendarController extends CoreEntityController {
     /**
@@ -35,6 +36,8 @@ class CalendarController extends CoreEntityController {
 
     protected $oCalendarTbl;
 
+    protected $aPluginTbls;
+
     /**
      * EventController constructor.
      *
@@ -42,9 +45,10 @@ class CalendarController extends CoreEntityController {
      * @param EventTable $oTableGateway
      * @since 1.0.0
      */
-    public function __construct(AdapterInterface $oDbAdapter,EventTable $oTableGateway,$oServiceManager) {
+    public function __construct(AdapterInterface $oDbAdapter,EventTable $oTableGateway,$oServiceManager,$aPluginTbls = []) {
         $this->oTableGateway = $oTableGateway;
         $this->sSingleForm = 'calendar-single';
+        $this->aPluginTbls = $aPluginTbls;
         parent::__construct($oDbAdapter,$oTableGateway,$oServiceManager);
 
         $this->oCalendarTbl = $oServiceManager->get(CalendarTable::class);
@@ -202,5 +206,93 @@ class CalendarController extends CoreEntityController {
         echo json_encode($aEvents);
 
         return false;
+    }
+
+    public function importicalAction()
+    {
+        $this->setThemeBasedLayout('event');
+
+        $oRequest = $this->getRequest();
+        if(!$oRequest->isPost()) {
+
+            return new ViewModel([]);
+        }
+
+        $sCalendarURL = $oRequest->getPost('calendar_url');
+        if($sCalendarURL == '') {
+            return new ViewModel([
+                'sError' => 'Ungültige Kalender URL',
+            ]);
+        }
+
+        $oICalSource = new iCal($sCalendarURL);
+        if(!isset($oICalSource->title)) {
+            return new ViewModel([
+                'sError' => 'Kalender konnte nicht geladen werden',
+            ]);
+        } else {
+            if($oICalSource->title == '') {
+                return new ViewModel([
+                    'sError' => 'Kalender konnte nicht geladen werden',
+                ]);
+
+            }
+        }
+        $sCalendarName = $oICalSource->title;
+        $aEvents = $oICalSource->eventsByDate();
+
+        $oCalCheck = $this->aPluginTbls['calendar']->fetchAll(false, ['label-like' => $sCalendarName,'created_by-like' => CoreEntityController::$oSession->oUser->getID()]);
+        $bMsgPrinted = false;
+        if(count($oCalCheck) > 0) {
+            $oCalendar = $oCalCheck->current();
+
+            $this->flashMessenger()->addWarningMessage('Kalender bereits vorhanden, wurde synchronisiert');
+            $bMsgPrinted = true;
+        } else {
+            $oNewCal = $this->aPluginTbls['calendar']->generateNew();
+            $oNewCal->exchangeArray(['label' => $sCalendarName,'is_remote' => 1,'remote_url' => $sCalendarURL]);
+            $iNewCalID = $this->aPluginTbls['calendar']->saveSingle($oNewCal);
+            $oCalendar = $this->aPluginTbls['calendar']->getSingle($iNewCalID);
+        }
+
+        //echo 'Calendar: '.$oICalSource->title.'<br/>';
+        //echo 'PLC Calendar: '.$oCalendar->getLabel().'<br/>';
+
+        $iEventCount = 0;
+
+        foreach ($aEvents as $date => $aEvents) {
+            foreach ($aEvents as $oEvent) {
+                # Only parse new events
+                if(strtotime($oEvent->dateStart) > time()) {
+                    $oEvCheck = $this->oTableGateway->fetchAll(false, [
+                        'date_start-like' => date('Y-m-d H:i:s', strtotime($oEvent->dateStart)),
+                        'date_end-like' => date('Y-m-d H:i:s', strtotime($oEvent->dateEnd)),
+                        'calendar_idfs' => $oCalendar->getID(),
+                    ]);
+                    if(count($oEvCheck) == 0) {
+                        $oNewEv = new Event(CoreEntityController::$oDbAdapter);
+                        $oNewEv->exchangeArray([
+                            'date_start' => date('Y-m-d H:i:s', strtotime($oEvent->dateStart)),
+                            'date_end' => date('Y-m-d H:i:s', strtotime($oEvent->dateEnd)),
+                            'calendar_idfs' => $oCalendar->getID(),
+                            'label' => $oEvent->title(),
+                        ]);
+                        $this->oTableGateway->saveSingle($oNewEv);
+                        $iEventCount++;
+
+                        //echo '+ ' . $oEvent->dateStart. ' - '.$oEvent->dateEnd.' : '.$oEvent->title() . "<br/>";
+                    } else {
+                        //echo '= ' . $oEvent->dateStart. ' - '.$oEvent->dateEnd.' : '.$oEvent->title() . "<br/>";
+                    }
+                }
+
+            }
+        }
+
+        if(!$bMsgPrinted) {
+            $this->flashMessenger()->addSuccessMessage('Kalender hinzugefügt. ' . $iEventCount . ' Events importiert');
+        }
+
+        return $this->redirect()->toRoute('calendar-main');
     }
 }

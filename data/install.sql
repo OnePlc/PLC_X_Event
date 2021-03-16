@@ -33,7 +33,8 @@ INSERT INTO `permission` (`permission_key`, `module`, `label`, `nav_label`, `nav
 ('rerun', 'OnePlace\\Event\\Controller\\EventController', 'Manage Reruns', '', '', 0, 0),
 ('addrerun', 'OnePlace\\Event\\Controller\\EventController', 'Manage Reruns', '', '', 0, 0),
 ('editrerun', 'OnePlace\\Event\\Controller\\EventController', 'Manage Reruns', '', '', 0, 0),
-('listcalendars', 'OnePlace\\Event\\Controller\\ApiController', 'List Calendars', '', '', 0, 0);
+('listcalendars', 'OnePlace\\Event\\Controller\\ApiController', 'List Calendars', '', '', 0, 0),
+('importical', 'OnePlace\\Event\\Controller\\CalendarController', 'Import iCal Calendar', '', '', 0, 0);
 
 --
 -- Form

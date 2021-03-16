@@ -26,6 +26,7 @@ use Laminas\Session\Container;
 use Laminas\EventManager\EventInterface as Event;
 use Application\Controller\CoreEntityController;
 use OnePlace\Event\Controller\EventController;
+use OnePlace\Event\Model\CalendarTable;
 use OnePlace\Event\Model\EventTable;
 
 class Module {
@@ -135,10 +136,14 @@ class Module {
                 # Calendar Controller
                 Controller\CalendarController::class => function($container) {
                     $oDbAdapter = $container->get(AdapterInterface::class);
+                    $aPluginTbls = [];
+                    $aPluginTbls['calendar'] = $container->get(CalendarTable::class);
+
                     return new Controller\CalendarController(
                         $oDbAdapter,
                         $container->get(Model\EventTable::class),
-                        $container
+                        $container,
+                        $aPluginTbls
                     );
                 },
                 # Installer

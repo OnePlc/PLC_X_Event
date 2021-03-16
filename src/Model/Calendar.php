@@ -43,6 +43,22 @@ class Calendar extends CoreEntityModel {
     public $color_text;
 
     /**
+     * Defines if Calendar has a remote source
+     *
+     * @var boolean $is_remote
+     * @since 1.0.17
+     */
+    public $is_remote;
+
+    /**
+     * URL for Calendar Remote source
+     *
+     * @var string $remote_url
+     * @since 1.0.17
+     */
+    public $remote_url;
+
+    /**
      * Event constructor.
      *
      * @param AdapterInterface $oDbAdapter
@@ -69,6 +85,8 @@ class Calendar extends CoreEntityModel {
         $this->label = !empty($aData['label']) ? $aData['label'] : '';
         $this->color_background = !empty($aData['color_background']) ? $aData['color_background'] : '';
         $this->color_text = !empty($aData['color_text']) ? $aData['color_text'] : '';
+        $this->is_remote = !empty($aData['is_remote']) ? $aData['is_remote'] : 0;
+        $this->remote_url = !empty($aData['remote_url']) ? $aData['remote_url'] : '';
 
         $this->updateDynamicFields($aData);
     }

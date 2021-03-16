@@ -1,0 +1,33 @@
+<?php
+
+?>
+<form action="" method="POST">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <?=$this->translate('Import ical Calendar')?>
+                    </h2>
+                </div>
+                <div class="card-header">
+                    <?php if(isset($sError)) { ?>
+                        <div class="alert alert-danger p-4">
+                            <?=$sError?>
+                        </div>
+                    <?php } ?>
+                    <div class="alert alert-info p-4">
+                        Google Kalender: In die Einstellungen des Kalenders und die "Geheime Adresse im iCal Format" kopieren
+                    </div>
+                </div>
+                <div class="card-body">
+                    <label for="calendar_url">URL</label>
+                    <input type="text" class="form-control" name="calendar_url" />
+                </div>
+                <div class="card-footer">
+                    <input type="submit" class="btn btn-primary" value="Kalender importieren" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

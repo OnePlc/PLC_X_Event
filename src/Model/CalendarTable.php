@@ -53,18 +53,20 @@ class CalendarTable extends CoreEntityTable {
     }
 
     /**
-     * Save Event Entity
+     * Save Calendar Entity
      *
-     * @param Event $oEvent
+     * @param Calendar $oCalendar
      * @return int Event ID
      * @since 1.0.0
      */
-    public function saveSingle(Event $oEvent) {
+    public function saveSingle(Calendar $oCalendar) {
         $aDefaultData = [
-            'label' => $oEvent->label,
+            'label' => $oCalendar->label,
+            'is_remote' => $oCalendar->is_remote,
+            'remote_url' => $oCalendar->remote_url,
         ];
 
-        return $this->saveSingleEntity($oEvent,'Calendar_ID',$aDefaultData);
+        return $this->saveSingleEntity($oCalendar,'Calendar_ID',$aDefaultData);
     }
 
     /**
@@ -74,6 +76,6 @@ class CalendarTable extends CoreEntityTable {
      * @since 1.0.0
      */
     public function generateNew() {
-        return new Event($this->oTableGateway->getAdapter());
+        return new Calendar($this->oTableGateway->getAdapter());
     }
 }

@@ -16,6 +16,8 @@ CREATE TABLE `event_calendar` (
   `color_background` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `color_text` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_remote` BOOLEAN NOT NULL DEFAULT FALSE,
+  `remote_url` VARCHAR(255) NOT NULL DEFAULT '',
   `created_by` int(11) NOT NULL,
   `created_date` datetime NOT NULL,
   `modified_by` int(11) NOT NULL,
