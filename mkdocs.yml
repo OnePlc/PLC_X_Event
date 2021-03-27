@@ -7,7 +7,7 @@ nav:
   - 'ICS Export': export-ics.md
   - Tutorials:
     - 'Integrate to Outlook': outlook.md
-site_name: oneplace-skeleton
+site_name: oneplace-event
 site_description: "onePlace Event Module"
 repo_url: 'https://github.com/OnePlc/PLC_X_Event'
 theme: bootstrap4
