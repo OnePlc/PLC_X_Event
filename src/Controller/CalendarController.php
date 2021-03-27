@@ -241,7 +241,10 @@ class CalendarController extends CoreEntityController {
         $sCalendarName = $oICalSource->title;
         $aEvents = $oICalSource->eventsByDate();
 
-        $oCalCheck = $this->aPluginTbls['calendar']->fetchAll(false, ['label-like' => $sCalendarName,'created_by-like' => CoreEntityController::$oSession->oUser->getID()]);
+        $oCalCheck = $this->aPluginTbls['calendar']->fetchAll(false, [
+            'label-like' => $sCalendarName,
+            'created_by-like' => CoreEntityController::$oSession->oUser->getID(),
+            'is_remote-like' => 1]);
         $bMsgPrinted = false;
         if(count($oCalCheck) > 0) {
             $oCalendar = $oCalCheck->current();
@@ -268,6 +271,7 @@ class CalendarController extends CoreEntityController {
                         'date_start-like' => date('Y-m-d H:i:s', strtotime($oEvent->dateStart)),
                         'date_end-like' => date('Y-m-d H:i:s', strtotime($oEvent->dateEnd)),
                         'calendar_idfs' => $oCalendar->getID(),
+                        'user_idfs' => CoreEntityController::$oSession->oUser->getID(),
                     ]);
                     if(count($oEvCheck) == 0) {
                         $oNewEv = new Event(CoreEntityController::$oDbAdapter);
@@ -275,6 +279,7 @@ class CalendarController extends CoreEntityController {
                             'date_start' => date('Y-m-d H:i:s', strtotime($oEvent->dateStart)),
                             'date_end' => date('Y-m-d H:i:s', strtotime($oEvent->dateEnd)),
                             'calendar_idfs' => $oCalendar->getID(),
+                            'user_idfs' => CoreEntityController::$oSession->oUser->getID(),
                             'label' => $oEvent->title(),
                         ]);
                         $this->oTableGateway->saveSingle($oNewEv);
