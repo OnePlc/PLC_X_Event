@@ -28,3 +28,6 @@ msgstr "Abbrechen"
 
 msgid "Manage Calendar"
 msgstr "Kalender verwalten"
+
+msgid "Calendar %s successfully saved"
+msgstr "Kalender %s erfolgreich gespeichert"

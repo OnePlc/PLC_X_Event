@@ -4,13 +4,13 @@
     <div class="col-md-6">
         <label><?=$this->translate('Name')?></label>
         <div class="input-group" title="Using input value">
-            <input type="text" class="form-control" value="<?=$oCalendar->label?>" />
+            <input type="text" name="calendar_label" class="form-control" value="<?=$oCalendar->label?>" />
         </div>
     </div>
     <div class="col-md-2">
         <label><?=$this->translate('Background Color')?></label>
         <div id="calendarBGColor" class="input-group plc-colorpick" title="Using input value">
-            <input type="text" class="form-control" value="<?=$oCalendar->color_background?>" />
+            <input type="text" name="calendar_color_background" class="form-control" value="<?=$oCalendar->color_background?>" />
             <span class="input-group-append">
                 <span class="input-group-text colorpicker-input-addon"><i></i></span>
             </span>
@@ -19,7 +19,7 @@
     <div class="col-md-2">
         <label><?=$this->translate('Text Color')?></label>
         <div id="calendarTextColor" class="input-group plc-colorpick" title="Using input value">
-            <input type="text" class="form-control" value="<?=$oCalendar->color_text?>" />
+            <input type="text" name="calendar_color_text" class="form-control" value="<?=$oCalendar->color_text?>" />
             <span class="input-group-append">
                 <span class="input-group-text colorpicker-input-addon"><i></i></span>
             </span>

@@ -312,12 +312,31 @@ class CalendarController extends CoreEntityController {
         $this->setThemeBasedLayout('event');
 
         $iCalendarID = $this->params()->fromRoute('id', 0);
-
         $oCalendar = $this->aPluginTbls['calendar']->getSingle($iCalendarID);
 
-        return new ViewModel([
-            'oCalendar' => $oCalendar,
-        ]);
+        $oRequest = $this->getRequest();
+
+        # Show Form
+        if(!$oRequest->isPost()) {
+            return new ViewModel([
+                'oCalendar' => $oCalendar,
+            ]);
+        }
+
+        # Save Calendar
+        $aAttributes = ['label','color_background','color_text'];
+        foreach($aAttributes as $sAttr) {
+            $sNewVal = $oRequest->getPost('calendar_'.$sAttr);
+            $this->aPluginTbls['calendar']->updateAttribute($sAttr, $sNewVal, 'Calendar_ID', $oCalendar->getID());
+        }
+
+        # Print Success Message
+        $this->flashMessenger()->addSuccessMessage(
+            sprintf(CoreEntityController::$oTranslator->translate('Calendar %s successfully saved'),
+            $oCalendar->getLabel())
+        );
+
+        return $this->redirect()->toRoute('event-calendar');
     }
 
     /**

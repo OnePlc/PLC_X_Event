@@ -1,26 +1,26 @@
 <?php
-
+/**
+ * Generate Card to Manage Settings
+ */
+$sCardBody = $this->partial('partial/event/calendar/share_body', [
+    'oCalendar' => $oCalendar,
+]);
+$sCardFooter = $this->partial('partial/basic_card_footer', [
+    'bCancelButton' => true,
+    'sCancelButtonAction' => '/calendar',
+    'sCancelButtonLabel' => $this->translate('Back to Calendar'),
+]);
 ?>
 <form action="" method="POST">
+    <div class="row">
     <?php
-    /**
-     * Generate Card to Manage Settings
-     */
-    $sCardBody = $this->partial('partial/event/calendar/share_body', [
-        'oCalendar' => $oCalendar,
-    ]);
-    $sCardFooter = $this->partial('partial/basic_card_footer', [
-        'bCancelButton' => true,
-        'sCancelButtonAction' => '/calendar',
-        'sCancelButtonLabel' => $this->translate('Back to Calendar'),
-    ]);
-
     echo $this->partial('partial/basic_card', [
         'sCardTitle' => $this->translate('Share Calendar'),
         'sCardBody' => $sCardBody,
         'sCardFooter' => $sCardFooter,
     ]);
     ?>
+    </div>
 </form>
 
 <script>
