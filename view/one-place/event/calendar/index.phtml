@@ -15,14 +15,49 @@ $this->headLink()
 ?>
 <div class="row">
     <div class="col-md-2">
-        <h3><?=$this->translate('Calendars')?></h3>
-        <ul class="list-group">
-            <?php foreach($aCalendars as $oCal) { ?>
-                <li class="list-group-item">
-                    <span class="btn btn-primary" style="background:<?=$oCal->getColor('background')?>; color:<?=$oCal->getColor('text')?>;"><?=$oCal->getLabel()?></span>
-                </li>
-            <?php }?>
-        </ul>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <?=$this->translate('Calendars')?>
+                </h2>
+            </div>
+            <div class="card-body p-0 b-0">
+                <ul class="list-group">
+                    <?php foreach($aCalendars as $oCal) { ?>
+                        <li class="list-group-item">
+                        <div class="btn btn-primary w-100" style="border:1px solid <?=$oCal->getColor('background')?>; background:<?=$oCal->getColor('background')?>; color:<?=$oCal->getColor('text')?>;">
+                            <div class="row">
+                                <div class="col-md-8 text-left">
+                                    <?=($oCal->is_remote == 1) ? '<i class="fas fa-cloud"></i> ' : ''?>
+                                    <div style="font-size:18px;"><?=$this->translate($oCal->getLabel())?></div>
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-cog"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="/calendar/share/<?=$oCal->getID()?>">
+                                                <i class="fas fa-share"></i> Teilen</a>
+                                            <a class="dropdown-item" href="/calendar/settings/<?=$oCal->getID()?>">
+                                                <i class="fas fa-cog"></i> Einstellungen</a>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="fas fa-trash"></i> Löschen</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </li>
+                    <?php }?>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a class="btn btn-light" href="/calendar/importical" title="<?=$this->translate('Add Calendar')?>">
+                    <i class="fas fa-cloud"></i> <?=$this->translate('Add Calendar')?>
+                </a>
+            </div>
+        </div>
     </div>
     <div class="col-md-10">
         <div id='calendar'></div>
@@ -41,7 +76,7 @@ $this->headLink()
             defaultDate: '<?=date('Y-m-d',time())?>',
             locale: 'de',
             weekNumbers: true,
-            themeSystem: 'bootstrap',
+            //themeSystem: 'bootstrap', buggy as of 2021-03-28 - switching back to default system for now
             eventClick: function(info) {
                 $.post('/event/modal/'+info.event.id,{mode:'modal',goto:'general'},function(retModal) {
                     $('#exampleModalCenter').html(retModal);

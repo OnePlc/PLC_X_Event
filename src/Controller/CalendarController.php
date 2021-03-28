@@ -300,4 +300,42 @@ class CalendarController extends CoreEntityController {
 
         return $this->redirect()->toRoute('calendar-main');
     }
+
+    /**
+     * Calendar Settings Page
+     *
+     * @return ViewModel
+     * @since 1.0.5
+     */
+    public function settingsAction()
+    {
+        $this->setThemeBasedLayout('event');
+
+        $iCalendarID = $this->params()->fromRoute('id', 0);
+
+        $oCalendar = $this->aPluginTbls['calendar']->getSingle($iCalendarID);
+
+        return new ViewModel([
+            'oCalendar' => $oCalendar,
+        ]);
+    }
+
+    /**
+     * Calendar Share Page
+     *
+     * @return ViewModel
+     * @since 1.0.5
+     */
+    public function shareAction()
+    {
+        $this->setThemeBasedLayout('event');
+
+        $iCalendarID = $this->params()->fromRoute('id', 0);
+
+        $oCalendar = $this->aPluginTbls['calendar']->getSingle($iCalendarID);
+
+        return new ViewModel([
+            'oCalendar' => $oCalendar,
+        ]);
+    }
 }

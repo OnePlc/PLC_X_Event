@@ -1,0 +1,103 @@
+<?php
+$this->InlineScript()
+    ->appendFile('/vendor/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js');
+
+$this->headLink()
+    ->appendStylesheet('/vendor/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css')
+?>
+<form action="" method="POST">
+    <?php
+    /**
+     * Generate Card to Manage Settings
+     */
+    $sCardBody = $this->partial('partial/event/calendar/settings_body', [
+        'oCalendar' => $oCalendar,
+    ]);
+    $sCardFooter = $this->partial('partial/basic_card_footer', [
+        'sButtonLabel' => $this->translate('Save Calendar'),
+        'sButtonIcon' => 'fas fa-save',
+        'bCancelButton' => true,
+        'sCancelButtonAction' => '/calendar',
+        //'sCancelButtonClass' => 'btn-danger',
+    ]);
+
+    echo $this->partial('partial/basic_card', [
+        'sCardTitle' => $this->translate('Manage Calendar'),
+        'sCardBody' => $sCardBody,
+        'sCardFooter' => $sCardFooter,
+    ]);
+    ?>
+</form>
+
+<script>
+    $(function () {
+        $('.plc-colorpick').colorpicker({
+            inline: false,
+            container: true,
+            autoInputFallback: false,
+            format: 'hex',
+            customClass: 'colorpicker-2x',
+            sliders: {
+                saturation: {
+                    maxLeft: 200,
+                    maxTop: 200
+                },
+                hue: {
+                    maxTop: 200
+                },
+                alpha: {
+                    maxTop: 200
+                }
+            }
+        });
+
+        $('#shareCalendarToUser').select2({
+            placeholder: 'Add New User',
+            ajax: {
+                url: '/user/api/list/0',
+                dataType: 'json'
+            }
+        });
+
+        $('#shareCalendarToUser').on('select2:select', function(e) {
+            let sName = e.params.data.text;
+            $('#calendarShareList').append('<li class="list-group-item"><div class="row"> <div class="col-md-4 col-lg-2"> '+sName+' </div><div class="col-md-4 col-lg-2"><span class="badge badge-primary badge-lg">Admin</span></div><div class="col-md-4 col-lg-2"><a href="#"><i class="fas fa-edit"></i></a> | <a href="#"><i class="fas fa-trash"></i></a></div></div></li>');
+        });
+    });
+</script>
+<style>
+    .colorpicker.colorpicker-2x {
+        width: 272px;
+    }
+
+    .colorpicker-2x .colorpicker-saturation {
+        width: 200px;
+        height: 200px;
+    }
+
+    .colorpicker-2x .colorpicker-hue,
+    .colorpicker-2x .colorpicker-alpha {
+        width: 30px;
+        height: 200px;
+    }
+
+    .colorpicker-2x .colorpicker-alpha,
+    .colorpicker-2x .colorpicker-preview {
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+    }
+
+    .colorpicker-2x .colorpicker-preview,
+    .colorpicker-2x .colorpicker-preview div {
+        height: 30px;
+        font-size: 16px;
+        line-height: 160%;
+    }
+
+    .colorpicker-saturation .colorpicker-guide {
+        height: 10px;
+        width: 10px;
+        border-radius: 10px;
+        margin: -5px 0 0 -5px;
+    }
+</style>

@@ -1,0 +1,79 @@
+<?php
+?>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Privatsphäre</h3>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <input type="radio" name="calendar_mode" value="private" checked />
+                            <b><?=$this->translate('Private')?></b>
+                        </div>
+                        <div class="col-md-11">
+                            <?=$this->translate('Only you can see it')?>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <input type="radio" name="calendar_mode" value="public" />
+                            <b><?=$this->translate('Public')?></b>
+                        </div>
+                        <div class="col-md-11">
+                            <?=$this->translate('Every User in onePlace can see this calendar')?>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <input type="radio" name="calendar_mode" value="shared" />
+                            <b><?=$this->translate('Shared')?></b>
+                        </div>
+                        <div class="col-md-11">
+                            <?=$this->translate('Calendar is shared with a group of selected onePlace users')?>
+                            <ul class="list-group" id="calendarShareList">
+                                <li class="list-group-item">
+                                    <select id="shareCalendarToUser" class="form-control"></select>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-4 col-lg-2">
+                                            Nathanael Kammermann
+                                        </div>
+                                        <div class="col-md-4 col-lg-2">
+                                            <span class="badge badge-primary badge-lg">Admin</span>
+                                        </div>
+                                        <div class="col-md-4 col-lg-2">
+                                            <a href="#">
+                                                <i class="fas fa-edit"></i>
+                                            </a> |
+                                            <a href="#">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div> <!-- close card-body from parent template -->
+
+<!-- start new section -->
+<div class="card-header">
+</div>
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Extern Teilen oder Einbinden</h3>
+            <div class="alert alert-info p-4">Mit dem folgenden Link können Sie diesen Kalender in anderen Programmen wie z.B Outlook einbinden</div>
+            <code>https://1plc.ch/ics/<?=$oCalendar->getID()?></code>
+        </div>
+    </div>
+<!-- don't close last card-body - this is done in parent template -->
