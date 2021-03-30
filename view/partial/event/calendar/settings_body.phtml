@@ -1,0 +1,38 @@
+<?php
+?>
+<div class="row">
+    <div class="col-md-6">
+        <label><?=$this->translate('Name')?></label>
+        <div class="input-group" title="Using input value">
+            <input type="text" name="calendar_label" class="form-control" value="<?=$oCalendar->label?>" />
+        </div>
+    </div>
+    <div class="col-md-2">
+        <label><?=$this->translate('Background Color')?></label>
+        <div id="calendarBGColor" class="input-group plc-colorpick" title="Using input value">
+            <input type="text" name="calendar_color_background" class="form-control" value="<?=$oCalendar->color_background?>" />
+            <span class="input-group-append">
+                <span class="input-group-text colorpicker-input-addon"><i></i></span>
+            </span>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <label><?=$this->translate('Text Color')?></label>
+        <div id="calendarTextColor" class="input-group plc-colorpick" title="Using input value">
+            <input type="text" name="calendar_color_text" class="form-control" value="<?=$oCalendar->color_text?>" />
+            <span class="input-group-append">
+                <span class="input-group-text colorpicker-input-addon"><i></i></span>
+            </span>
+        </div>
+    </div>
+</div>
+
+<?php if($oCalendar->is_remote == 1) { ?>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="alert alert-info p-2">
+                <?=$this->translate('This is a remote calendar so only for display. You cannot add events to this calendar')?>
+            </div>
+        </div>
+    </div>
+<?php } ?>

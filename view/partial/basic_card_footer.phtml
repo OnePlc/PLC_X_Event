@@ -1,0 +1,14 @@
+<?php if(isset($sButtonLabel)) { ?>
+<button type="submit" class="btn btn-success btn-lg plc-card-savebutton">
+    <?=(isset($sButtonIcon)) ? '<i class="'.$sButtonIcon.'"></i> ' : ''?><?=$sButtonLabel?>
+</button>
+<?php } ?>
+<?php
+if(isset($bCancelButton)) {
+    if($bCancelButton) { ?>
+    <a href="<?=$sCancelButtonAction?>" class="btn <?=(isset($sCancelButtonClass)) ? $sCancelButtonClass : 'btn-secondary'?> btn-lg">
+        <?=$this->translate((isset($sCancelButtonLabel)) ? $sCancelButtonLabel : 'Cancel')?>
+    </a>
+<?php
+    }
+}

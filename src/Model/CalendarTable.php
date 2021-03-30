@@ -63,6 +63,10 @@ class CalendarTable extends CoreEntityTable {
         $aDefaultData = [
             'label' => $oCalendar->label,
             'is_remote' => $oCalendar->is_remote,
+            'type' => $oCalendar->type,
+            'user_idfs' => $oCalendar->user_idfs,
+            'color_background' => $oCalendar->color_background,
+            'color_text' => $oCalendar->color_text,
             'remote_url' => $oCalendar->remote_url,
         ];
 

@@ -10,3 +10,4 @@ phpunit.xml
 composer.lock
 .phpunit.result.cache
 docs/html/
+public/lib/*

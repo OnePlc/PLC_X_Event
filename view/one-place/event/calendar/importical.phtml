@@ -1,33 +1,67 @@
 <?php
 
+$this->InlineScript()
+    ->appendFile('/vendor/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js');
+
+$this->headLink()
+    ->appendStylesheet('/vendor/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css')
+    ->appendStylesheet('/vendor/oneplace-event/css/colorpicker.css');
+
+/**
+ * Generate Card to Import Calendar
+ */
+$sCardBody = $this->partial('partial/event/calendar/import_body', []);
+$sCardFooter = $this->partial('partial/basic_card_footer', [
+    'sButtonLabel' => $this->translate('Create Calendar'),
+    'sButtonIcon' => 'fas fa-save',
+    'bCancelButton' => true,
+    'sCancelButtonAction' => '/calendar',
+    //'sCancelButtonClass' => 'btn-danger',
+]);
 ?>
 <form action="" method="POST">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <?=$this->translate('Import ical Calendar')?>
-                    </h2>
-                </div>
-                <div class="card-header">
-                    <?php if(isset($sError)) { ?>
-                        <div class="alert alert-danger p-4">
-                            <?=$sError?>
-                        </div>
-                    <?php } ?>
-                    <div class="alert alert-info p-4">
-                        Google Kalender: In die Einstellungen des Kalenders und die "Geheime Adresse im iCal Format" kopieren
-                    </div>
-                </div>
-                <div class="card-body">
-                    <label for="calendar_url">URL</label>
-                    <input type="text" class="form-control" name="calendar_url" />
-                </div>
-                <div class="card-footer">
-                    <input type="submit" class="btn btn-primary" value="Kalender importieren" />
-                </div>
-            </div>
-        </div>
-    </div>
+<?php
+echo $this->partial('partial/basic_card', [
+    'sCardTitle' => $this->translate('Create new Calendar'),
+    'sCardBody' => $sCardBody,
+    'sCardFooter' => $sCardFooter,
+]);
+?>
 </form>
+
+<script>
+$(function () {
+    $('.plc-colorpick').colorpicker({
+        inline: false,
+        container: true,
+        autoInputFallback: false,
+        format: 'hex',
+        customClass: 'colorpicker-2x',
+        sliders: {
+            saturation: {
+                maxLeft: 200,
+                maxTop: 200
+            },
+            hue: {
+                maxTop: 200
+            },
+            alpha: {
+                maxTop: 200
+            }
+        }
+    });
+
+   $('input[name="calendar_type"]').on('change', function () {
+       let sType = $(this).val();
+       if(sType == 'local') {
+           $('.calendar-internet').addClass('d-none');
+           $('.calendar-local').removeClass('d-none');
+           $('.plc-card-savebutton').html('<i class="fas fa-save"></i> Create Calendar');
+       } else {
+           $('.calendar-local').addClass('d-none');
+           $('.calendar-internet').removeClass('d-none');
+           $('.plc-card-savebutton').html('<i class="fas fa-download"></i> Import Calendar');
+       }
+   });
+});
+</script>

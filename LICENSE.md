@@ -1,4 +1,4 @@
-Copyright (c) 2019-2020, Verein onePlace
+Copyright (c) 2019-2021, Verein onePlace
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

@@ -1,0 +1,74 @@
+<?php
+$this->InlineScript()
+    ->appendFile('/vendor/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js');
+
+$this->headLink()
+    ->appendStylesheet('/vendor/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css')
+    ->appendStylesheet('/vendor/oneplace-event/css/colorpicker.css');
+
+
+/**
+ * Generate Card to Manage Settings
+ */
+$sCardBody = $this->partial('partial/event/calendar/settings_body', [
+    'oCalendar' => $oCalendar,
+]);
+$sCardFooter = $this->partial('partial/basic_card_footer', [
+    'sButtonLabel' => $this->translate('Save Calendar'),
+    'sButtonIcon' => 'fas fa-save',
+    'bCancelButton' => true,
+    'sCancelButtonAction' => '/calendar',
+    //'sCancelButtonClass' => 'btn-danger',
+]);
+?>
+<form action="" method="POST">
+    <div class="row">
+    <?php
+    echo $this->partial('partial/basic_card', [
+        'sCardTitle' => $this->translate('Manage Calendar'),
+        'sCardBody' => $sCardBody,
+        'sCardFooter' => $sCardFooter,
+    ]);
+    ?>
+    </div>
+</form>
+
+<script>
+    $(function () {
+        $('.plc-colorpick').colorpicker({
+            inline: false,
+            container: true,
+            autoInputFallback: false,
+            format: 'hex',
+            customClass: 'colorpicker-2x',
+            sliders: {
+                saturation: {
+                    maxLeft: 200,
+                    maxTop: 200
+                },
+                hue: {
+                    maxTop: 200
+                },
+                alpha: {
+                    maxTop: 200
+                }
+            }
+        });
+
+        $('#shareCalendarToUser').select2({
+            placeholder: 'Add New User',
+            ajax: {
+                url: '/user/api/list/0',
+                dataType: 'json'
+            }
+        });
+
+        $('#shareCalendarToUser').on('select2:select', function(e) {
+            let sName = e.params.data.text;
+            $('#calendarShareList').append('<li class="list-group-item"><div class="row"> <div class="col-md-4 col-lg-2"> '+sName+' </div><div class="col-md-4 col-lg-2"><span class="badge badge-primary badge-lg">Admin</span></div><div class="col-md-4 col-lg-2"><a href="#"><i class="fas fa-edit"></i></a> | <a href="#"><i class="fas fa-trash"></i></a></div></div></li>');
+        });
+    });
+</script>
+<style>
+
+</style>

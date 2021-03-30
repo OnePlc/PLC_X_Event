@@ -1,0 +1,56 @@
+<?php
+/**
+ * Generate Card to Manage Settings
+ */
+$sCardBody = $this->partial('partial/event/calendar/share_body', [
+    'oCalendar' => $oCalendar,
+    'aShares' => $aShares,
+]);
+$sCardFooter = $this->partial('partial/basic_card_footer', [
+    'sButtonLabel' => $this->translate('Save Share Settings'),
+    'sButtonIcon' => 'fas fa-save',
+    'bCancelButton' => true,
+    'sCancelButtonAction' => '/calendar',
+    'sCancelButtonLabel' => $this->translate('Back to Calendar'),
+]);
+?>
+<form action="" method="POST">
+    <div class="row">
+    <?php
+    echo $this->partial('partial/basic_card', [
+        'sCardTitle' => $this->translate('Share Calendar').' '.$oCalendar->getLabel(),
+        'sCardBody' => $sCardBody,
+        'sCardFooter' => $sCardFooter,
+    ]);
+    ?>
+    </div>
+</form>
+
+<script>
+    $(function () {
+        $('#shareCalendarToUser').select2({
+            placeholder: 'Add New User',
+            ajax: {
+                url: '/user/api/list/0',
+                dataType: 'json'
+            }
+        });
+
+        $('#shareCalendarToUser').on('select2:select', function(e) {
+            let sName = e.params.data.text;
+            let iID = e.params.data.id;
+            $('#calendarShareList').append('<li class="list-group-item"><input type="hidden" name="share_user_id[]" value="'+iID+'" /><div class="row"> <div class="col-md-4 col-lg-2"> '+sName+' </div><div class="col-md-4 col-lg-2"><span class="badge badge-primary badge-lg">Admin</span></div><div class="col-md-4 col-lg-2"><a href="#"><i class="fas fa-edit"></i></a> | <a href="#"><i class="fas fa-trash"></i></a></div></div></li>');
+        });
+
+        $('input[name="calendar_mode"').on('change', function(e) {
+            let sVal = $(this).val();
+            if(sVal == "shared") {
+                $('#calendarShareList').removeClass('d-none');
+            } else {
+                if(!$('#calendarShareList').hasClass('d-none')) {
+                    $('#calendarShareList').addClass('d-none');
+                }
+            }
+        });
+    });
+</script>

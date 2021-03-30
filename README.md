@@ -10,19 +10,12 @@
 
 ## Introduction
 
-This is the Event Module for onePlace Software Framework based on Laminas Project (former Zend Framework)
+This is the Event Module for onePlace Software Framework
 
-Create your web based apps on the fly! onePlace brings you extended Entity and Table Models,
-View Helpers and much more - so you can build your Webapp to manage database based data, 
-in almost any layout you can image. 
-
-onePlace is built for maximum freedom of choice for your app, and so only small
-parts of laminas mvc are utilized. a lot is done from scratch to give you more freedom / customization.
-
-## Event Module
-
-This event module is a starting point for your own onePlace modules.
-It expands on [oneplace-core](https://github.com/OnePlc/PLC_X_Core) and uses the onePlace / Laminas MVC layer and module systems.
+- Create and manage events in calendars. 
+- optional support for external calendars via ics import.
+- ics export for oneplace calendars to integrate them into other applications.
+- used for onePlace Booking Module
 
 ## Installation
 

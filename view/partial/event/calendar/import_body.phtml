@@ -1,0 +1,43 @@
+<?php
+?>
+    <div class="row">
+        <div class="col-md-12">
+            <input type="radio" name="calendar_type" value="local" checked /> <?=$this->translate('Local') ?> <br/>
+            <input type="radio" name="calendar_type" value="network" /> <?=$this->translate('Internet') ?>
+        </div>
+    </div>
+</div>
+<div class="card-header">
+
+</div>
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-8 calendar-internet d-none">
+            <label><?=$this->translate('Calendar URL')?></label>
+            <input type="text" class="form-control" name="calendar_url" />
+        </div>
+        <div class="col-md-3 calendar-local">
+            <label><?=$this->translate('Name')?></label>
+            <div class="input-group" title="Using input value">
+                <input type="text" name="calendar_name" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label><?=$this->translate('Background Color')?></label>
+            <div id="calendarBGColor" class="input-group plc-colorpick" title="Using input value">
+                <input type="text" name="calendar_color_background" class="form-control" />
+                <span class="input-group-append">
+                <span class="input-group-text colorpicker-input-addon"><i></i></span>
+            </span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label><?=$this->translate('Text Color')?></label>
+            <div id="calendarTextColor" class="input-group plc-colorpick" title="Using input value">
+                <input type="text" name="calendar_color_text" class="form-control" />
+                <span class="input-group-append">
+                <span class="input-group-text colorpicker-input-addon"><i></i></span>
+            </span>
+            </div>
+        </div>
+    </div>
