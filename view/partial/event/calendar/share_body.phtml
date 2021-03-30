@@ -7,7 +7,7 @@
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col-md-1">
-                            <input type="radio" name="calendar_mode" value="private" checked />
+                            <input type="radio" name="calendar_mode" value="private" <?=($oCalendar->is_public == 0 && count($aShares) == 0) ? 'checked' : ''?> />
                             <b><?=$this->translate('Private')?></b>
                         </div>
                         <div class="col-md-11">
@@ -18,7 +18,7 @@
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col-md-1">
-                            <input type="radio" name="calendar_mode" value="public" />
+                            <input type="radio" name="calendar_mode" value="public" <?=($oCalendar->is_public == 1) ? 'checked' : ''?> />
                             <b><?=$this->translate('Public')?></b>
                         </div>
                         <div class="col-md-11">
@@ -29,22 +29,24 @@
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col-md-1">
-                            <input type="radio" name="calendar_mode" value="shared" />
+                            <input type="radio" name="calendar_mode" value="shared" <?=(count($aShares) > 0) ? 'checked' : ''?> />
                             <b><?=$this->translate('Shared')?></b>
                         </div>
                         <div class="col-md-11">
                             <?=$this->translate('Calendar is shared with a group of selected onePlace users')?>
-                            <ul class="list-group" id="calendarShareList">
+                            <ul class="list-group <?=(count($aShares) == 0) ? 'd-none' : ''?>" id="calendarShareList">
                                 <li class="list-group-item">
                                     <select id="shareCalendarToUser" class="form-control"></select>
                                 </li>
+                                <?php foreach($aShares as $oSh) { ?>
                                 <li class="list-group-item">
+                                    <input type="hidden" name="share_user_id[]" value="<?=$oSh->oUser->getID()?>" />
                                     <div class="row">
                                         <div class="col-md-4 col-lg-2">
-                                            Nathanael Kammermann
+                                            <?=$oSh->oUser->getLabel()?>
                                         </div>
                                         <div class="col-md-4 col-lg-2">
-                                            <span class="badge badge-primary badge-lg">Admin</span>
+                                            <span class="badge badge-primary badge-lg"><?=$oSh->role?></span>
                                         </div>
                                         <div class="col-md-4 col-lg-2">
                                             <a href="#">
@@ -56,6 +58,7 @@
                                         </div>
                                     </div>
                                 </li>
+                                <?php } ?>
                             </ul>
                         </div>
                     </div>
@@ -63,9 +66,9 @@
             </ul>
         </div>
     </div>
-</div> <!-- close card-body from parent template -->
+<!-- </div>  close card-body from parent template
 
-<!-- start new section -->
+ start new section
 <div class="card-header">
 </div>
 <div class="card-body">
@@ -76,4 +79,4 @@
             <code>https://1plc.ch/ics/<?=$oCalendar->getID()?></code>
         </div>
     </div>
-<!-- don't close last card-body - this is done in parent template -->
+ don't close last card-body - this is done in parent template -->

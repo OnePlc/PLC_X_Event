@@ -18,12 +18,24 @@ CREATE TABLE `event_calendar` (
   `color_text` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_remote` BOOLEAN NOT NULL DEFAULT FALSE,
+  `is_public` BOOLEAN NOT NULL DEFAULT FALSE,
+  `user_idfs` int(11) NOT NULL,
   `remote_url` VARCHAR(255) NOT NULL DEFAULT '',
   `created_by` int(11) NOT NULL,
   `created_date` datetime NOT NULL,
   `modified_by` int(11) NOT NULL,
   `modified_date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `event_calendar_user` (
+    `user_idfs` int(11) NOT NULL,
+    `calendar_idfs` int(11) NOT NULL,
+    `role` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+ALTER TABLE `event_calendar_user`
+    ADD PRIMARY KEY (`user_idfs`,`calendar_idfs`);
 
 ALTER TABLE `event_calendar`
     ADD PRIMARY KEY (`Calendar_ID`);

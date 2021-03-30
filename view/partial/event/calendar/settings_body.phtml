@@ -26,3 +26,13 @@
         </div>
     </div>
 </div>
+
+<?php if($oCalendar->is_remote == 1) { ?>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="alert alert-info p-2">
+                <?=$this->translate('This is a remote calendar so only for display. You cannot add events to this calendar')?>
+            </div>
+        </div>
+    </div>
+<?php } ?>

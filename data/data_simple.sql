@@ -24,8 +24,8 @@ INSERT INTO `settings` (`settings_key`, `settings_value`) VALUES
 --
 -- default calendar
 --
-INSERT INTO `event_calendar` (`Calendar_ID`, `label`, `color_background`, `color_text`, `type`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES
-(NULL, 'Private', 'blue', 'white', 'default', '1', CURRENT_TIME(), '1', CURRENT_TIME());
+-- INSERT INTO `event_calendar` (`Calendar_ID`, `label`, `color_background`, `color_text`, `type`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES
+-- (NULL, 'Private', 'blue', 'white', 'default', '1', CURRENT_TIME(), '1', CURRENT_TIME());
 
 --
 -- default event duration ( global value )

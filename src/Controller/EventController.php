@@ -144,10 +144,19 @@ class EventController extends CoreEntityController {
         $this->layout('layout/modal');
 
         $iEventID = $this->params()->fromRoute('id', '0');
+        $iUserID = CoreEntityController::$oSession->oUser->getID();
         $sFormMode = (isset($_REQUEST['form'])) ? $_REQUEST['form'] : 'view';
         $oEvent = false;
         $oEventTpl = false;
         $sDateSelected = '';
+        $aCalendars = [];
+        $oCalendar = $this->oCalendarTbl->getSingle('first');
+        $oCalendarsDB = $this->oCalendarTbl->fetchAll(false, ['user_idfs' => $iUserID,'is_remote' => 0]);
+        if(count($oCalendarsDB) > 0) {
+            foreach($oCalendarsDB as $oCal) {
+                $aCalendars[] = $oCal;
+            }
+        }
         if($iEventID != 0) {
             $oEvent = $this->oTableGateway->getSingle($iEventID);
             $oCalendar = $this->oCalendarTbl->getSingle($oEvent->calendar_idfs);
@@ -156,7 +165,6 @@ class EventController extends CoreEntityController {
             $this->layout()->oItem = $oEvent;
         } else {
             $sDateSelected = $_REQUEST['date'];
-            $oCalendar = $this->oCalendarTbl->getSingle('first');
             $oEventTpl = $this->oTableGateway->generateNew();
         }
 
@@ -164,6 +172,7 @@ class EventController extends CoreEntityController {
             'oEvent' => $oEvent,
             'sFormMode' => $sFormMode,
             'oCalendar' => $oCalendar,
+            'aCalendars' => $aCalendars,
             'sFormName' => $this->sSingleForm,
             'oEventTpl' => $oEventTpl,
             'sDateSelected' => $sDateSelected,
