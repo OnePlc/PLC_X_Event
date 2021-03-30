@@ -35,7 +35,7 @@ class Module {
      *
      * @since 1.0.0
      */
-    const VERSION = '1.0.5';
+    const VERSION = '1.0.6';
 
     /**
      * Load module config file
@@ -138,6 +138,7 @@ class Module {
                     $oDbAdapter = $container->get(AdapterInterface::class);
                     $aPluginTbls = [];
                     $aPluginTbls['calendar'] = $container->get(CalendarTable::class);
+                    $aPluginTbls['user'] = $container->get(\OnePlace\User\Model\UserTable::class);
 
                     return new Controller\CalendarController(
                         $oDbAdapter,

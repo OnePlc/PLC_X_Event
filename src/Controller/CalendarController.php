@@ -105,6 +105,7 @@ class CalendarController extends CoreEntityController {
         if(count($oMySharesDB) > 0) {
             foreach($oMySharesDB as $oSh) {
                 $oCal = $this->aPluginTbls['calendar']->getSingle($oSh->calendar_idfs);
+                $oCal->oUser = $this->aPluginTbls['user']->getSingle($oCal->user_idfs);
                 $aEventSources[] = (object)[
                     'url' => '/calendar/load/' . $oCal->getID(),
                     'color' => $oCal->getColor('background'),

@@ -6,6 +6,10 @@
  * Time: 20:49
  */
 
+use Application\Controller\CoreController;
+
+$iUserID = CoreController::$oSession->oUser->getID();
+
 $this->InlineScript()
     ->appendFile($this->basePath() . '/vendor/oneplace-event/lib/@fullcalendar/main.min.js')
     ->appendFile($this->basePath() . '/vendor/oneplace-event/lib/@fullcalendar/locales-all.min.js')
@@ -36,6 +40,7 @@ $this->headLink()
                                     </div>
                                 </div>
                                 <div class="col-md-4 text-right">
+                                    <?php if($oCal->user_idfs == $iUserID) { ?>
                                     <div class="dropdown">
                                         <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-cog"></i>
@@ -49,6 +54,9 @@ $this->headLink()
                                                 <i class="fas fa-trash"></i> Löschen</a>
                                         </div>
                                     </div>
+                                    <?php } else { ?>
+                                        <i class="fas fa-share-alt" title="<?=$this->translate('Shared by')?> <?=$oCal->oUser->getLabel()?>"></i>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>

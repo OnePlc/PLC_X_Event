@@ -82,6 +82,6 @@ INSERT INTO `user_xp_activity` (`Activity_ID`, `xp_key`, `label`, `xp_base`) VAL
 (NULL, 'event-edit', 'Edit Event', '5'),
 (NULL, 'event-export', 'Edit Event', '5');
 
-INSERT INTO `settings` (`settings_key`, `settings_value`) VALUES ('event-icon', 'fas fa-calendar-alt');
+INSERT INTO `settings` (`settings_key`, `settings_value`) VALUES ('calendar-icon', 'fas fa-calendar-alt');
 
 COMMIT;
