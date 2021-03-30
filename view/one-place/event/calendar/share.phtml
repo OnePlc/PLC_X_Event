@@ -6,7 +6,7 @@ $sCardBody = $this->partial('partial/event/calendar/share_body', [
     'oCalendar' => $oCalendar,
     'aShares' => $aShares,
 ]);
-$sCardFooter = $this->partial('partial/basic_card_footer', [
+$sCardFooter = $this->partial('templates/card/basic_footer', [
     'sButtonLabel' => $this->translate('Save Share Settings'),
     'sButtonIcon' => 'fas fa-save',
     'bCancelButton' => true,
@@ -17,7 +17,7 @@ $sCardFooter = $this->partial('partial/basic_card_footer', [
 <form action="" method="POST">
     <div class="row">
     <?php
-    echo $this->partial('partial/basic_card', [
+    echo $this->partial('templates/card/basic', [
         'sCardTitle' => $this->translate('Share Calendar').' '.$oCalendar->getLabel(),
         'sCardBody' => $sCardBody,
         'sCardFooter' => $sCardFooter,
