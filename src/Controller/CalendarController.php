@@ -256,10 +256,11 @@ class CalendarController extends CoreEntityController {
         }
 
         $sCalendarType = $oRequest->getPost('calendar_type');
+        $sBackgroundColor = $oRequest->getPost('calendar_color_background');
+        $sTextColor = $oRequest->getPost('calendar_color_text');
         if($sCalendarType == 'local') {
             $sCalendarName = $oRequest->getPost('calendar_name');
-            $sBackgroundColor = $oRequest->getPost('calendar_color_background');
-            $sTextColor = $oRequest->getPost('calendar_color_text');
+
             if ($sCalendarName == '') {
                 return new ViewModel([
                     'sError' => 'Invalid Calendar Name',
@@ -322,6 +323,8 @@ class CalendarController extends CoreEntityController {
                     'is_remote' => 1,
                     'remote_url' => $sCalendarURL,
                     'user_idfs' => CoreEntityController::$oSession->oUser->getID(),
+                    'color_background' => $sBackgroundColor,
+                    'color_text' => $sTextColor,
                 ]);
                 $iNewCalID = $this->aPluginTbls['calendar']->saveSingle($oNewCal);
                 $oCalendar = $this->aPluginTbls['calendar']->getSingle($iNewCalID);
