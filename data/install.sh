@@ -1,6 +1,12 @@
 #!/bin/bash
 
-DIR="/var/www/plc"
+DIR=$1
+if [ "${DIR}" == "" ]; then
+  echo "Please specify plc docroot (e.G /var/www/plc)"
+  exit
+fi
+
+apt install unzip
 
 if [ ! -d "${DIR}/vendor/oneplace/oneplace-event/public/lib" ]; then
   mkdir "${DIR}/vendor/oneplace/oneplace-event/public/lib"
