@@ -1,0 +1,46 @@
+<?php
+/**
+ * delete.phtml - Delete Event
+ *
+ * View File for Delete Event Form
+ *
+ * @category View
+ * @package Event
+ * @author Nathanael Kammermann
+ * @copyright (C) 2021  Verein onePlace <admin@1plc.ch>
+ * @license https://opensource.org/licenses/BSD-3-Clause
+ * @version 1.0
+ * @since 1.0.6
+ */
+
+$title = 'Delete Calendar';
+$url   = $this->url('event-calendar', ['action' => 'delete', 'id' =>  $oCalendar->getID()]);
+
+$this->headTitle($title);
+?>
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h1><?= $this->escapeHtml($title) ?></h1>
+            </div>
+            <div class="card-body">
+                <p>
+                    <?=sprintf($this->translate('Are you sure you want to delete Calendar "%s" ?'),
+                        $this->escapeHtml($oCalendar->getLabel()))?><br/>
+                    <b class="text-danger"><?=$this->translate('All Events in this calendar will be deleted too. This cannot be undone.')?></b>
+                </p>
+            </div>
+            <div class="card-footer">
+                <form action="<?= $url ?>" method="post">
+                    <div class="form-group">
+                        <input type="hidden" name="id" value="<?= (int) $oCalendar->getID() ?>" />
+                        <input type="submit" class="btn btn-danger" name="del" value="<?=$this->translate('Yes')?>" />
+                        <a href="/calendar" type="submit" class="btn btn-success"><?=$this->translate('No')?></a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

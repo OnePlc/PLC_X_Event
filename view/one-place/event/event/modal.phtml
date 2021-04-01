@@ -5,6 +5,8 @@ use Application\Controller\CoreController;
 # fallback value is 60 minutes
 $iDefaultDuration = 60;
 
+$oMe = CoreController::$oSession->oUser;
+
 # try to get user setting
 if(CoreController::$oSession->oUser->getSetting('event-default-duration')) {
     $iDefaultDuration = CoreController::$oSession->oUser->getSetting('event-default-duration');
@@ -27,15 +29,29 @@ if(isset($aHoursTmp[1])) {
 <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
         <div class="modal-header">
-            <div class="float-right">
-                <div class="row modalBar">
-                    <?php if($oEvent && $sFormMode != 'edit') { ?>
-                        <div class="col-md-2">
-                            <a href="#<?=$oEvent->getID()?>" class="btn btn-primary plc-event-edit-modal" title="<?=$this->translate('Edit Event')?>">
-                                <i class="fas fa-edit" style="width:25px;"></i>
-                            </a>
-                        </div>
-                        <!-- Not in use yet
+            <div class="row modalBar">
+                <?php if($oEvent && $sFormMode != 'edit') { ?>
+                    <div class="col-md-12">
+                        <?php
+                        if($oMe->hasPermission('edit','OnePlace-Event-Controller-EventController')) {
+                            if($oCalendar->user_idfs == $oMe->getID()) { ?>
+                                <a href="#<?=$oEvent->getID()?>" class="btn btn-primary plc-event-edit-modal" title="<?=$this->translate('Edit Event')?>">
+                                    <i class="fas fa-edit" style="width:25px;"></i>
+                                </a>
+                        <?php
+                            }
+                        }
+                        if($oMe->hasPermission('delete','OnePlace-Event-Controller-EventController')) {
+                            if($oCalendar->user_idfs == $oMe->getID()) { ?>
+                                <a href="#" class="btn btn-danger plc-event-delete-modal" title="<?=$this->translate('Delete Event')?>">
+                                    <i class="fas fa-trash" style="width:25px;"></i>
+                                </a>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </div>
+                    <!-- Not in use yet
                         <div class="col-md-2">
                             <a href="#" class="btn btn-primary">
                                 <i class="fas fa-envelope" style="width:25px;"></i>
@@ -48,21 +64,13 @@ if(isset($aHoursTmp[1])) {
                             </a>
                         </div>
                          -->
-                        <div class="col-md-2">
-                        </div>
-                        <div class="col-md-2">
-                            <a href="#" class="btn btn-danger" title="<?=$this->translate('Delete Event')?>">
-                                <i class="fas fa-trash" style="width:25px;"></i>
-                            </a>
-                        </div>
-                    <?php } else { ?>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary plc-event-modal-save">
-                                <i class="fas fa-save" style="width:25px;"></i>
-                            </button>
-                        </div>
-                    <?php } ?>
-                </div>
+                <?php } else { ?>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary plc-event-modal-save">
+                            <i class="fas fa-save" style="width:25px;"></i>
+                        </button>
+                    </div>
+                <?php } ?>
             </div>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -81,7 +89,7 @@ if(isset($aHoursTmp[1])) {
                     <div class="col-md-12">
                         <div class="row py-2">
                             <div class="col-md-2">
-                                <div style="margin-right:12px; border-radius:50px; width:32px; height:32px; float:left; background:<?=$oCalendar->getColor('background')?>; color:<?=$oCalendar->getColor('text')?>;">
+                                <div title="<?=$oCalendar->getLabel()?>" style="margin-right:12px; border-radius:50px; width:32px; height:32px; float:left; background:<?=$oCalendar->getColor('background')?>; color:<?=$oCalendar->getColor('text')?>;">
 
                                 </div>
                             </div>
@@ -92,6 +100,7 @@ if(isset($aHoursTmp[1])) {
                                 </h2>
                             </div>
                         </div>
+                        <!--
                         <div class="row py-1">
                             <div class="col-md-2">
                                 <i class="fas fa-info-circle"></i>
@@ -99,7 +108,8 @@ if(isset($aHoursTmp[1])) {
                             <div class="col-md-10">
                                 <?=$oEvent->getTextField('excerpt')?>
                             </div>
-                        </div>
+                        </div> -->
+                        <?php if($oEvent->getTextField('description') != '') { ?>
                         <div class="row py-1">
                             <div class="col-md-2">
                                 <i class="fas fa-align-justify"></i>
@@ -108,6 +118,7 @@ if(isset($aHoursTmp[1])) {
                                 <?=$oEvent->getTextField('description')?>
                             </div>
                         </div>
+                        <?php } ?>
                     </div>
                     <!-- disabled for now
                     <div class="col-md-5">
@@ -352,6 +363,14 @@ if(isset($aHoursTmp[1])) {
         $('.plc-event-edit-modal').on('click', function() {
             // load rerun list
             $.post('/event/modal/<?=$oEvent->getID()?>', {form:'edit'}, function (retHTML) {
+                $('.modal-dialog').replaceWith(retHTML);
+            });
+            return false;
+        });
+
+        $('.plc-event-delete-modal').on('click', function() {
+            // load rerun list
+            $.get('/event/delete/<?=$oEvent->getID()?>', {mode:'modal'}, function (retHTML) {
                 $('.modal-dialog').replaceWith(retHTML);
             });
             return false;

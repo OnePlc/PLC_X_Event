@@ -8,7 +8,8 @@
 
 use Application\Controller\CoreController;
 
-$iUserID = CoreController::$oSession->oUser->getID();
+$oMe = CoreController::$oSession->oUser;
+$iUserID = $oMe->getID();
 
 $this->InlineScript()
     ->appendFile($this->basePath() . '/vendor/oneplace-event/lib/@fullcalendar/main.min.js')
@@ -50,11 +51,11 @@ $this->headLink()
                                                 <i class="fas fa-share"></i> Teilen</a>
                                             <a class="dropdown-item" href="/calendar/settings/<?=$oCal->getID()?>">
                                                 <i class="fas fa-cog"></i> Einstellungen</a>
-                                            <a class="dropdown-item" href="#">
+                                            <a class="dropdown-item" href="/calendar/delete/<?=$oCal->getID()?>">
                                                 <i class="fas fa-trash"></i> Löschen</a>
                                         </div>
                                     </div>
-                                    <?php } else { ?>
+                                    <?php } elseif(isset($oCal->oUser)) { ?>
                                         <i class="fas fa-share-alt" title="<?=$this->translate('Shared by')?> <?=$oCal->oUser->getLabel()?>"></i>
                                     <?php } ?>
                                 </div>
@@ -95,6 +96,7 @@ $this->headLink()
                     $('#exampleModalCenter').modal('toggle');
                 });
             },
+            <?php if($oMe->hasPermission('add','OnePlace-Event-Controller-EventController')) { ?>
             dateClick: function(info) {
                 var sDateSelected = info.dateStr;
                 $.get('/event/modal/0',{mode:'modal',goto:'general',date:sDateSelected},function(retModal) {
@@ -102,6 +104,7 @@ $this->headLink()
                     $('#exampleModalCenter').modal('toggle');
                 });
             },
+            <?php } ?>
             eventSources: <?=json_encode($aEventSources)?>
         });
         calendar.render();

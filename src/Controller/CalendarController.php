@@ -475,4 +475,40 @@ class CalendarController extends CoreEntityController {
         return $this->redirect()->toRoute('event-calendar');
 
     }
+
+    /**
+     * Delete Calendar
+     *
+     * @return ViewModel
+     * @since 1.0.6
+     */
+    public function deleteAction()
+    {
+        $this->setThemeBasedLayout('event');
+
+        $iCalendarID = $this->params()->fromRoute('id', '0');
+        $oCalendar = $this->aPluginTbls['calendar']->getSingle($iCalendarID);
+
+        $oRequest = $this->getRequest();
+        if(!$oRequest->isPost()) {
+
+            return new ViewModel([
+                'oCalendar' => $oCalendar,
+            ]);
+        }
+
+        $sAnswer = $oRequest->getPost('del');
+        if($sAnswer != '') {
+            # Only calendar owner can delete event
+            if($oCalendar->user_idfs == CoreEntityController::$oSession->oUser->getID()) {
+                $this->aPluginTbls['calendar']->deleteSingle($iCalendarID);
+                # Print Success Message
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf(CoreEntityController::$oTranslator->translate('Calendar %s successfully removed'),
+                        $oCalendar->getLabel())
+                );
+            }
+            return $this->redirect()->toRoute('event-calendar');
+        }
+    }
 }
