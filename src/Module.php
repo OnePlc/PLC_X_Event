@@ -47,6 +47,10 @@ class Module {
         return include __DIR__ . '/../config/module.config.php';
     }
 
+    public static function getModuleDir() : string {
+        return __DIR__.'/../';
+    }
+
     public function onBootstrap(Event $e)
     {
         // This method is called once the MVC bootstrapping is complete
