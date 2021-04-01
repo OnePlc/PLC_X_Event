@@ -79,7 +79,30 @@ class EventTable extends CoreEntityTable {
         return new Event($this->oTableGateway->getAdapter());
     }
 
+    /**
+     * Get All Entities
+     *
+     * @param false $bPaginated
+     * @param array $aWhere
+     * @param string $sSort
+     * @return mixed - List of Results
+     * @since 1.0.0
+     */
     public function fetchAll($bPaginated = false,$aWhere = [],$sSort = 'date_start ASC') {
         return parent::fetchAll($bPaginated,$aWhere,$sSort);
+    }
+
+    /**
+     * Delete Event
+     * @param $iEventID
+     * @return bool
+     * @since 1.0.6
+     */
+    public function deleteSingle($iEventID) {
+        if($this->oTableGateway->delete(['Event_ID' => $iEventID])) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

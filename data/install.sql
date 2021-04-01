@@ -22,6 +22,7 @@ ALTER TABLE `event`
 INSERT INTO `permission` (`permission_key`, `module`, `label`, `nav_label`, `nav_href`, `show_in_menu`, `needs_globaladmin`) VALUES
 ('add', 'OnePlace\\Event\\Controller\\EventController', 'Add', '', '', 0, 0),
 ('edit', 'OnePlace\\Event\\Controller\\EventController', 'Edit', '', '', 0, 0),
+('delete', 'OnePlace\\Event\\Controller\\EventController', 'Delete', '', '', 0, 0),
 ('index', 'OnePlace\\Event\\Controller\\EventController', 'Index', 'Calendar', '/calendar', 1, 0),
 ('list', 'OnePlace\\Event\\Controller\\ApiController', 'List', '', '', 1, 0),
 ('view', 'OnePlace\\Event\\Controller\\EventController', 'View', '', '', 0, 0),
@@ -36,7 +37,8 @@ INSERT INTO `permission` (`permission_key`, `module`, `label`, `nav_label`, `nav
 ('listcalendars', 'OnePlace\\Event\\Controller\\ApiController', 'List Calendars', '', '', 0, 0),
 ('importical', 'OnePlace\\Event\\Controller\\CalendarController', 'Import iCal Calendar', '', '', 0, 0),
 ('settings', 'OnePlace\\Event\\Controller\\CalendarController', 'Edit Calendar Settings', '', '', 0, 0),
-('share', 'OnePlace\\Event\\Controller\\CalendarController', 'Share Calendar', '', '', 0, 0);
+('share', 'OnePlace\\Event\\Controller\\CalendarController', 'Share Calendar', '', '', 0, 0),
+('delete', 'OnePlace\\Event\\Controller\\CalendarController', 'Delete Calendar', '', '', 0, 0);
 
 --
 -- Form
@@ -82,6 +84,6 @@ INSERT INTO `user_xp_activity` (`Activity_ID`, `xp_key`, `label`, `xp_base`) VAL
 (NULL, 'event-edit', 'Edit Event', '5'),
 (NULL, 'event-export', 'Edit Event', '5');
 
-INSERT INTO `settings` (`settings_key`, `settings_value`) VALUES ('event-icon', 'fas fa-calendar-alt');
+INSERT INTO `settings` (`settings_key`, `settings_value`) VALUES ('calendar-icon', 'fas fa-calendar-alt');
 
 COMMIT;

@@ -82,4 +82,20 @@ class CalendarTable extends CoreEntityTable {
     public function generateNew() {
         return new Calendar($this->oTableGateway->getAdapter());
     }
+
+    /**
+     * Delete Calendar
+     * @param $iCalendarID
+     * @return bool
+     * @since 1.0.6
+     */
+    public function deleteSingle($iCalendarID) {
+        if($this->oTableGateway->delete(['Calendar_ID' => $iCalendarID])) {
+            $oEvTbl = new TableGateway('event', CoreController::$oDbAdapter);
+            $oEvTbl->delete(['calendar_idfs' => $iCalendarID]);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

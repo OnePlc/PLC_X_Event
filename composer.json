@@ -3,7 +3,7 @@
   "description": "onePlace Event Module",
   "type": "oneplace-module",
   "license": "BSD-3-Clause",
-  "version": "1.0.5",
+  "version": "1.0.6",
     "keywords": [
         "laminas",
         "mvc",
@@ -14,12 +14,12 @@
     ],
     "require-dev": {
         "phpunit/phpunit": "^8",
-        "oneplace/oneplace-core": "^1.0.33",
         "laminas/laminas-test": "^3.3.0"
     },
     "require": {
         "php": "^7.1",
         "oneplace/oneplace-core": "^1.0.33",
+        "oneplace/oneplace-templates": "^1.0.0",
         "phpoffice/phpspreadsheet": "^1.10"
     },
     "autoload": {

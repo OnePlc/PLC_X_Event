@@ -24,8 +24,12 @@ use OnePlace\Event\Model\Event;
 use OnePlace\Event\Model\EventTable;
 use Laminas\View\Model\ViewModel;
 use Laminas\Db\Adapter\AdapterInterface;
+use Laminas\Db\Sql\Select;
+use Laminas\Db\Sql\Where;
+use Laminas\Db\TableGateway\TableGateway;
 
-class EventController extends CoreEntityController {
+class EventController extends CoreEntityController
+{
     /**
      * Event Table Object
      *
@@ -34,7 +38,6 @@ class EventController extends CoreEntityController {
     protected $oTableGateway;
     protected $oCalendarTbl;
 
-
     /**
      * EventController constructor.
      *
@@ -42,7 +45,8 @@ class EventController extends CoreEntityController {
      * @param EventTable $oTableGateway
      * @since 1.0.0
      */
-    public function __construct(AdapterInterface $oDbAdapter,EventTable $oTableGateway,$oServiceManager) {
+    public function __construct(AdapterInterface $oDbAdapter,EventTable $oTableGateway,$oServiceManager)
+    {
         $this->oTableGateway = $oTableGateway;
         $this->sSingleForm = 'event-single';
         $this->oCalendarTbl = $oServiceManager->get(CalendarTable::class);
@@ -67,7 +71,8 @@ class EventController extends CoreEntityController {
      * @since 1.0.0
      * @return ViewModel - View Object with Data from Controller
      */
-    public function indexAction() {
+    public function indexAction()
+    {
         # You can just use the default function and customize it via hooks
         # or replace the entire function if you need more customization
         return $this->generateIndexView('event');
@@ -79,7 +84,8 @@ class EventController extends CoreEntityController {
      * @since 1.0.0
      * @return ViewModel - View Object with Data from Controller
      */
-    public function addAction() {
+    public function addAction()
+    {
         /**
          * You can just use the default function and customize it via hooks
          * or replace the entire function if you need more customization
@@ -104,7 +110,8 @@ class EventController extends CoreEntityController {
      * @since 1.0.0
      * @return ViewModel - View Object with Data from Controller
      */
-    public function editAction() {
+    public function editAction()
+    {
         /**
          * You can just use the default function and customize it via hooks
          * or replace the entire function if you need more customization
@@ -115,6 +122,14 @@ class EventController extends CoreEntityController {
          * event-edit-before-save (before save)
          * event-edit-after-save (after save)
          */
+        $oMe = CoreEntityController::$oSession->oUser;
+        $iEventID = $this->params()->fromRoute('id', 0);
+        $oEvent = $this->oTableGateway->getSingle($iEventID);
+
+        if($oMe->getID() != $oEvent->user_idfs) {
+            return $this->redirect()->toRoute('event-calendar');
+        }
+
         if(isset($_REQUEST[$this->sSingleForm.'_ismodal'])) {
             return $this->generateEditView('event', $this->sSingleForm, 'event-calendar', 'index', 0, [], 'Event saved successfully');
         } else {
@@ -128,7 +143,8 @@ class EventController extends CoreEntityController {
      * @since 1.0.0
      * @return ViewModel - View Object with Data from Controller
      */
-    public function viewAction() {
+    public function viewAction()
+    {
         /**
          * You can just use the default function and customize it via hooks
          * or replace the entire function if you need more customization
@@ -137,10 +153,50 @@ class EventController extends CoreEntityController {
          *
          * event-view-before
          */
+        $oMe = CoreEntityController::$oSession->oUser;
+        $iEventID = $this->params()->fromRoute('id', 0);
+        $oEvent = $this->oTableGateway->getSingle($iEventID);
+
+        # Check if user owns event
+        if($oMe->getID() != $oEvent->user_idfs) {
+
+            # check if calendar is public or shared with user
+            $oCalendar = $this->oCalendarTbl->getSingle($oEvent->calendar_idfs);
+            $bShared = false;
+            if($oCalendar->is_public == 1) {
+                $bShared = true;
+            } else {
+                # calendar is not public - so check if we find a share for this user
+                $oShareTbl = new TableGateway('event_calendar_user', CoreEntityController::$oDbAdapter);
+                $oSharesDB = $oShareTbl->select([
+                    'user_idfs' => $oMe->getID(),
+                ]);
+                if(count($oSharesDB) > 0) {
+                    foreach($oSharesDB as $oSh) {
+                        var_dump($oSh->calendar_idfs);
+                        if($oSh->calendar_idfs == $oEvent->calendar_idfs) {
+                            $bShared = true;
+                        }
+                    }
+                }
+            }
+
+            # do not show event if its not shared with user
+            if(!$bShared) {
+                return $this->redirect()->toRoute('event-calendar');
+            }
+        }
+
         return $this->generateViewView('event');
     }
 
-    public function modalAction() {
+    /**
+     * Modal Window to View and Edit Event in Calendar
+     *
+     * @return ViewModel
+     */
+    public function modalAction()
+    {
         $this->layout('layout/modal');
 
         $iEventID = $this->params()->fromRoute('id', '0');
@@ -179,7 +235,13 @@ class EventController extends CoreEntityController {
         ]);
     }
 
-    public function rerunAction() {
+    /**
+     * Show Event Re-Runs
+     *
+     * @return ViewModel
+     */
+    public function rerunAction()
+    {
         $this->layout('layout/json');
 
         $iEventID = $this->params()->fromRoute('id', '0');
@@ -193,7 +255,13 @@ class EventController extends CoreEntityController {
         ]);
     }
 
-    public function addrerunAction() {
+    /**
+     * Add Event Re-Run
+     *
+     * @return ViewModel
+     */
+    public function addrerunAction()
+    {
         $this->layout('layout/json');
 
         $iEventID = $this->params()->fromRoute('id', '0');
@@ -207,7 +275,13 @@ class EventController extends CoreEntityController {
         ]);
     }
 
-    public function editrerunAction() {
+    /**
+     * Edit Event Re-Run
+     *
+     * @return ViewModel
+     */
+    public function editrerunAction()
+    {
         $this->layout('layout/json');
 
         $iEventID = $this->params()->fromRoute('id', '0');
@@ -218,7 +292,15 @@ class EventController extends CoreEntityController {
         ]);
     }
 
-    public function writeSettingsToChildren($oEvent, $aRawFormData, $bSaveSuccess) {
+    /**
+     * Write Settings to Children (for Reruns)
+     *
+     * @param $oEvent
+     * @param $aRawFormData
+     * @param $bSaveSuccess
+     */
+    public function writeSettingsToChildren($oEvent, $aRawFormData, $bSaveSuccess)
+    {
         $oHasChildren = $this->oTableGateway->fetchAll(false, ['root_event_idfs' => $oEvent->getID()]);
 
         $aFormData = $this->parseFormData($_REQUEST);
@@ -232,6 +314,43 @@ class EventController extends CoreEntityController {
                 // write categories to children
                 $this->updateMultiSelectFields($aFormData,$oChild,'event-single');
             }
+        }
+    }
+
+    /**
+     * Delete Event
+     *
+     * @return ViewModel
+     * @since 1.0.6
+     */
+    public function deleteAction()
+    {
+        $this->layout('layout/json');
+
+        $iEventID = $this->params()->fromRoute('id', '0');
+        $oEvent = $this->oTableGateway->getSingle($iEventID);
+        $oCalendar = $this->oCalendarTbl->getSingle($oEvent->calendar_idfs);
+
+        $oRequest = $this->getRequest();
+        if(!$oRequest->isPost()) {
+
+            return new ViewModel([
+                'oEvent' => $oEvent,
+            ]);
+        }
+
+        $sAnswer = $oRequest->getPost('del');
+        if($sAnswer != '') {
+            # Only calendar owner can delete event
+            if($oCalendar->user_idfs == CoreEntityController::$oSession->oUser->getID()) {
+                $this->oTableGateway->deleteSingle($iEventID);
+                # Print Success Message
+                $this->flashMessenger()->addSuccessMessage(
+                    sprintf(CoreEntityController::$oTranslator->translate('Event %s successfully removed'),
+                        $oEvent->getLabel())
+                );
+            }
+            return $this->redirect()->toRoute('event-calendar');
         }
     }
 }

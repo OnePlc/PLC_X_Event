@@ -1,0 +1,44 @@
+<?php
+/**
+ * delete.phtml - Delete Event
+ *
+ * View File for Delete Event Form
+ *
+ * @category View
+ * @package Event
+ * @author Nathanael Kammermann
+ * @copyright (C) 2021  Verein onePlace <admin@1plc.ch>
+ * @license https://opensource.org/licenses/BSD-3-Clause
+ * @version 1.0
+ * @since 1.0.6
+ */
+
+$title = 'Delete Event';
+$url   = $this->url('event', ['action' => 'delete', 'id' =>  $oEvent->getID()]);
+
+$this->headTitle($title);
+?>
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1><?= $this->escapeHtml($title) ?></h1>
+        </div>
+        <div class="modal-body">
+            <p>
+                <?=sprintf($this->translate('Are you sure you want to delete Event "%s" ?'),
+                    $this->escapeHtml($oEvent->getLabel()))?><br/>
+                <b class="text-danger"><?=$this->translate('This cannot be undone')?></b>
+            </p>
+        </div>
+        <div class="modal-footer">
+            <form action="<?= $url ?>" method="post">
+                <div class="form-group">
+                    <input type="hidden" name="id" value="<?= (int) $oEvent->getID() ?>" />
+                    <input type="submit" class="btn btn-danger" name="del" value="<?=$this->translate('Yes')?>" />
+                    <a href="/calendar" type="submit" class="btn btn-success"><?=$this->translate('No')?></a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

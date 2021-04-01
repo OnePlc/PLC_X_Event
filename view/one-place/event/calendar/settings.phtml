@@ -6,14 +6,13 @@ $this->headLink()
     ->appendStylesheet('/vendor/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css')
     ->appendStylesheet('/vendor/oneplace-event/css/colorpicker.css');
 
-
 /**
  * Generate Card to Manage Settings
  */
 $sCardBody = $this->partial('partial/event/calendar/settings_body', [
     'oCalendar' => $oCalendar,
 ]);
-$sCardFooter = $this->partial('partial/basic_card_footer', [
+$sCardFooter = $this->partial('templates/card/basic_footer', [
     'sButtonLabel' => $this->translate('Save Calendar'),
     'sButtonIcon' => 'fas fa-save',
     'bCancelButton' => true,
@@ -24,7 +23,7 @@ $sCardFooter = $this->partial('partial/basic_card_footer', [
 <form action="" method="POST">
     <div class="row">
     <?php
-    echo $this->partial('partial/basic_card', [
+    echo $this->partial('templates/card/basic', [
         'sCardTitle' => $this->translate('Manage Calendar'),
         'sCardBody' => $sCardBody,
         'sCardFooter' => $sCardFooter,
