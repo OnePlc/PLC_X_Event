@@ -113,4 +113,46 @@ class InstallController extends CoreUpdateController {
             $this->redirect()->toRoute('application', ['action' => 'checkforupdates']);
         }
     }
+
+    /**
+     * Update Module to the latest version
+     *
+     * @return ViewModel
+     * @since 1.0.6
+     */
+    public function updateAction()
+    {
+        # Set Layout based on users theme
+        $this->setThemeBasedLayout('event');
+
+        $oModTbl = new TableGateway('core_module', CoreUpdateController::$oDbAdapter);
+        $oCurrentMod = $oModTbl->select([
+            'module_key'=>'oneplace-event',
+        ])->current();
+
+        $oRequest = $this->getRequest();
+        if(! $oRequest->isPost()) {
+
+
+            return new ViewModel([
+                'oCurrentModule' => $oCurrentMod,
+            ]);
+        }
+
+        $sNewVer = \OnePlace\Event\Module::VERSION;
+
+        $sUpdateSQL = \OnePlace\Event\Module::getModuleDir().'data/update_'.$oCurrentMod->version.'-'.$sNewVer.'.sql';
+        if(file_exists($sUpdateSQL)) {
+            $this->parseSQLInstallFile($sUpdateSQL,CoreUpdateController::$oDbAdapter);
+        }
+        $oModTbl->update([
+            'version' => $sNewVer,
+        ],[
+            'module_key'=>'oneplace-event',
+        ]);
+
+        $this->flashMessenger()->addSuccessMessage('Event Module successfully updated to version '.$sNewVer);
+
+        return $this->redirect()->toRoute('application', ['action' => 'checkforupdates']);
+    }
 }

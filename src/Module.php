@@ -35,7 +35,7 @@ class Module {
      *
      * @since 1.0.0
      */
-    const VERSION = '1.0.6';
+    const VERSION = '1.0.7';
 
     /**
      * Load module config file
@@ -45,6 +45,10 @@ class Module {
      */
     public function getConfig() : array {
         return include __DIR__ . '/../config/module.config.php';
+    }
+
+    public static function getModuleDir() : string {
+        return __DIR__.'/../';
     }
 
     public function onBootstrap(Event $e)
